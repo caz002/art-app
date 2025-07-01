@@ -4,6 +4,8 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import './index.css'
 import Profile from './pages/Profile.tsx'
 import Login from './pages/Login.tsx';
+import { UsernameProvider } from './contexts/UsernameContextProvider.tsx';
+import Post from './pages/Post.tsx';
 
 const router = createBrowserRouter([
   {
@@ -14,11 +16,17 @@ const router = createBrowserRouter([
     path: "profile",
     element: <Profile />,
   },
+  {
+    path: "post/:id",
+    element: <Post/>,
+  }
 ]);
  
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
+    <UsernameProvider>
     <RouterProvider router={router} />
+    </UsernameProvider>
   </StrictMode>,
 )
