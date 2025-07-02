@@ -6,6 +6,7 @@ import Profile from './pages/Profile.tsx'
 import Login from './pages/Login.tsx';
 import { UsernameProvider } from './contexts/UsernameContextProvider.tsx';
 import Post from './pages/Post.tsx';
+import { DataProvider } from './contexts/DataContextProvider.tsx';
 
 const router = createBrowserRouter([
   {
@@ -25,8 +26,10 @@ const router = createBrowserRouter([
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <UsernameProvider>
-    <RouterProvider router={router} />
-    </UsernameProvider>
+    <DataProvider>
+      <UsernameProvider>
+        <RouterProvider router={router} />
+      </UsernameProvider>
+    </DataProvider>
   </StrictMode>,
 )
