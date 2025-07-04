@@ -133,6 +133,14 @@ app.get('/api/posts', async (req: Request, res: Response) => {
     res.send(postsWithUrls);
 });
 
+app.get('/', (req: Request, res: Response) => {
+    res.send({
+        "GET ONE POST": `http://localhost:${port}/api/posts/[ID]`,
+        "GET ALL POSTS": `http://localhost:${port}/api/posts`,
+        "POST ONE POST": `http://localhost:${port}/api/posts`,
+    })
+})
+
 app.listen(port, () => {
     console.log(`Server is running at http://localhost:${port}`);
 })
