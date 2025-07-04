@@ -1,6 +1,7 @@
 import { PostCard } from "../components/PostCard";
 import { useUsernameContext } from "../contexts/UsernameContextProvider";
 import { useDataContext } from "../contexts/DataContextProvider";
+import NavBar from "../components/NavBar";
 function Profile() {
     const { username } = useUsernameContext();
     const {imageData, setImageData, currId, setCurrId} = useDataContext();
@@ -15,6 +16,7 @@ function Profile() {
     };
     return (
     <>
+        <NavBar></NavBar>
         <div className = "text-3xl">Profile</div>
         <div className = "text-xl">{username}</div>
         <div className = "text-3xl">Posts</div>
