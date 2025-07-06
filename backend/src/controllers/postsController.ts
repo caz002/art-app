@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { v4 as uuidv4} from 'uuid';
-import { getSignedS3Url, putNewS3ImageObject } from "../utils/s3";
-import { addPost, findAllPosts, findPostById } from "../services/postService";
+import { deleteS3ImageObject, getSignedS3Url, putNewS3ImageObject } from "../utils/s3";
+import { addPost, findAllPosts, findPostById, deletePostById } from "../services/postService";
 import sharp from "sharp";
 
 export const createPost = async (req : Request, res: Response) => {
@@ -39,6 +39,31 @@ export const createPost = async (req : Request, res: Response) => {
         res.status(500).json({ error: "Internal server error" });
     }
 };
+
+export const deletePost = async (req : Request, res : Response) => {
+    const id = Number(req.params.id);
+    if (!Number.isInteger(id) || id < 0) {
+        res.status(400).json({ error : `Yo give me a real valid ID`});
+        return;
+    }
+    try {
+        const post = await findPostById(id);
+        
+        if (!post) {
+            res.status(404).json({ error: `Yo, this post cannot be found`});
+            return;
+        }
+
+        await deleteS3ImageObject(post.imageKey);
+        await deletePostById(id);
+
+        res.status(200).json({ message: "Post deleted successfully" });
+    } catch (error) {
+        console.log(`deletePost Error:`, error instanceof Error ? error.message : "Unknown Error");
+        res.status(500).json({ error: "Internal server error" });
+    }
+};
+
 
 export const getAllPosts = async (req : Request, res : Response) => {
     try {

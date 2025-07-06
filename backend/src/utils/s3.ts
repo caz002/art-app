@@ -1,6 +1,6 @@
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { s3Client, s3Config } from "../config/s3";
-import { GetObjectCommand, PutObjectCommand } from "@aws-sdk/client-s3";
+import { GetObjectCommand, PutObjectCommand, DeleteObjectCommand } from "@aws-sdk/client-s3";
 
 export const getSignedS3Url = async (imageKey : string, expiresIn = 3600) => {
     try {
@@ -29,6 +29,20 @@ export const putNewS3ImageObject = async (imageName : string, buffer : Buffer<Ar
         await s3Client.send(command);
     } catch (error) {
         console.log(`S3 Upload Failed: `, error instanceof Error ? error.message : "Unknown Error");
+        throw error;
+    }
+};
+
+export const deleteS3ImageObject = async (imageKey: string) => {
+    try {
+        const command = new DeleteObjectCommand({
+            Bucket: s3Config.bucketName,
+            Key: imageKey
+        });
+
+        await s3Client.send(command);
+    } catch (error) {
+        console.log(`S3 Delete Failed: `, error instanceof Error ? error.message : "Unknown Error");
         throw error;
     }
 };

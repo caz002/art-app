@@ -48,3 +48,18 @@ export const findPostById = async (id: number) => {
         throw error;
     }
 };
+
+export const deletePostById = async (id: number) => {
+    try {
+        const post = await prisma.post.delete({
+            where: {
+                id: id
+            }
+        });
+
+        return post;
+    } catch (error) {
+        console.log(`deletePostById Error: `, error instanceof Error ? error.message : "Unknown Error");
+        throw error;
+    }
+};
