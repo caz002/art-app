@@ -3,6 +3,17 @@ import { v4 as uuidv4} from 'uuid';
 import { deleteS3ImageObject, getSignedS3Url, putNewS3ImageObject } from "../utils/s3";
 import { addPost, findAllPosts, findPostById, deletePostById } from "../services/postService";
 import sharp from "sharp";
+import { CloudFrontClient, CreateInvalidationCommand } from "@aws-sdk/client-cloudfront";
+import { getSignedUrl } from "@aws-sdk/cloudfront-signer";
+import { s3Config } from "../config/s3";
+
+const cloudFront = new CloudFrontClient({
+    region: s3Config.bucketRegion,
+    credentials: {
+        accessKeyId: s3Config.accessKey,
+        secretAccessKey: s3Config.secretAccessKey
+    }  
+});
 
 export const createPost = async (req : Request, res: Response) => {
     try {
@@ -55,6 +66,21 @@ export const deletePost = async (req : Request, res : Response) => {
         }
 
         await deleteS3ImageObject(post.imageKey);
+
+        const invalidateParams = {
+            DistributionId: process.env.CLOUDFRONT_DISTRIBUTION_ID,
+            InvalidationBatch: {
+                CallerReference: post.imageKey,
+                Paths: {
+                    Quantity: 1,
+                    Items: [`/${post.imageKey}`]
+                }
+            }
+        }
+
+        const invalidateCommand = new CreateInvalidationCommand(invalidateParams);
+        await cloudFront.send(invalidateCommand);
+
         await deletePostById(id);
 
         res.status(200).json({ message: "Post deleted successfully" });
@@ -64,15 +90,22 @@ export const deletePost = async (req : Request, res : Response) => {
     }
 };
 
-
 export const getAllPosts = async (req : Request, res : Response) => {
     try {
         const posts = await findAllPosts();
 
         const postsWithUrls = await Promise.all(posts.map(async post => {
+                    
+            const signedUrl = getSignedUrl({
+                url: "https://d1npmnr65yglaz.cloudfront.net/" + post.imageKey,
+                dateLessThan: new Date(Date.now() + 1000 * 60 * 30), // 30 min
+                privateKey: process.env.CLOUDFRONT_PRIVATE_KEY as string,
+                keyPairId: process.env.CLOUDFRONT_KEY_PAIR_ID as string
+            })
+
             return {
                 ...post,
-                imageUrl: await getSignedS3Url(post.imageKey)
+                imageUrl: signedUrl
             }
         }));
 

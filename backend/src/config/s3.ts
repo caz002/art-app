@@ -12,6 +12,8 @@ if (!bucketRegion || !accessKey || !secretAccessKey) {
 export const s3Config = {
     bucketName,
     bucketRegion,
+    accessKey,
+    secretAccessKey
 };
 
 export const s3Client = new S3Client({
