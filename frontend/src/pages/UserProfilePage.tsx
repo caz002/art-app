@@ -19,7 +19,7 @@ export default function UserProfile(){
                 <div className= "flex flex-row flex-1 justify-between gap-5 flex-wrap">
                     <div className ={boxStyling}>
                         <div className="flex flex-row flex-1 gap-5">
-                            <img src={BlankImage} className="w-32 h-32 rounded-md"></img>
+                            <img src={BlankImage} className="w-24 h-24 rounded-md"></img>
                             <div className="flex flex-col flex-1">
                                 <h1>Name</h1>
                                 <h4>Username</h4>
@@ -30,20 +30,23 @@ export default function UserProfile(){
                     </div>
                     <div className = {boxStyling}>
                         <h1>Stats</h1>
-                        <div className="flex flex-row flex-1 gap-5">
+                        <div className="flex flex-row flex-1 gap-3 items-center">
+                            <img src="/ViewsIcon.svg" className="w-6 h-6"/>
                             <p>Views</p>
                             <p>50 K</p>
                         </div>
-                        <div className="flex flex-row flex-1 gap-5">
+                        <div className="flex flex-row flex-1 gap-3 items-center">
+                            <img src="/PostsIcon.svg" className="w-6 h-6"/>
                             <p>Posts</p>
                             <p>273</p>
                         </div>
-                        <div className="flex flex-row flex-1 gap-5">
+                        <div className="flex flex-row flex-1 gap-3 items-center">
+                            <img src="/FollowersIcon.svg" className="w-6 h-6"/>
                             <p>Followers</p>
                             <p>10 K</p>
                         </div>
                     </div>
-                    <div className = {boxStyling}>
+                    <div className = {`${boxStyling} flex-2`}>
                         <h1>Progress</h1>          
                     </div>
                 </div>
@@ -52,8 +55,8 @@ export default function UserProfile(){
                     <h1>Posts</h1>
                     <Link to="/create"><h1>+</h1></Link>
                     </div>
-                    <div className="grid grid-cols-4 gap-4 mt-5">
-                    {imageData.length > 0 ? imageData.map(image => <img src={image.imageUrl} key = {image.imageKey}className="rounded-md" onClick = {() => {setShowPopup(true); setPopupURL(image.imageUrl)}}/>) : <div>Loading...</div>}
+                    <div className="grid grid-cols-4 gap-2 mt-5">
+                    {imageData.length > 0 ? imageData.map(image => <img src={image.imageUrl} key = {image.imageKey}className="rounded-sm" onClick = {() => {setShowPopup(true); setPopupURL(image.imageUrl)}}/>) : <div>Loading...</div>}
                     </div>
                 </div>
             </div>

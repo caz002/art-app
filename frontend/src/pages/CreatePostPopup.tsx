@@ -34,16 +34,19 @@ export default function CreatePost(){
   }
 
   return (
-    <form onSubmit={submit}>
-      <input onChange={handleFileChange} type="file" accept="image/*" />
-      <input
-        value={caption}
-        onChange={(e) => setCaption(e.target.value)}
-        type="text"
-        placeholder="Caption"
-      />
-      <button type="submit">Submit</button>
-    </form>
+    <div className = "flex flex-col gap-5">
+      <h1>Create Post</h1>
+      <form onSubmit={submit}>
+        <input onChange={handleFileChange} type="file" accept="image/*" />
+        <input
+          value={caption}
+          onChange={(e) => setCaption(e.target.value)}
+          type="text"
+          placeholder="Caption"
+        />
+        <button type="submit">Submit</button>
+      </form>
+    </div>
   )
 }
 //     const [file, setFile] = useState<File | null>(null);
