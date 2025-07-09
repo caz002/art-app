@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useEffect} from 'react';
 import type { ImageData } from '../lib/types';
 
+// Stores Data from backend
 interface DataContextType {
   imageData: ImageData[],
   setImageData: React.Dispatch<React.SetStateAction<{
