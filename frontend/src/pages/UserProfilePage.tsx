@@ -3,7 +3,6 @@ import BlankImage from "../images/NoImageAvaliable.png"
 import { Link } from "react-router-dom";
 import PostPopup from "./PostPopup";
 import { useDataContext } from "../contexts/DataContextProvider";
-import { Suspense } from "react";
 
 export default function UserProfile(){
     const [showPopup, setShowPopup] = useState(false);
@@ -12,11 +11,13 @@ export default function UserProfile(){
     //TODO: replace later with popup context
     const [popupURL, setPopupURL] = useState("");
     const boxStyling = "bg-[#282828] rounded-md p-5 flex flex-col flex-1 gap-5";
+
     return(
         <div className = "bg-[#1A1A1A] flex flex-1">
             {showPopup && <PostPopup setShowPopup={setShowPopup} imageUrl={popupURL}/>}
             <div className="flex flex-col flex-1 gap-5">
                 <div className= "flex flex-row flex-1 justify-between gap-5 flex-wrap">
+                    {/* User Info Section */}
                     <div className ={boxStyling}>
                         <div className="flex flex-row flex-1 gap-5">
                             <img src={BlankImage} className="w-24 h-24 rounded-md"></img>
@@ -28,6 +29,7 @@ export default function UserProfile(){
                         </div>
                         <button className="bg-white text-[#1A1A1A] rounded-md p-2">Edit Profile</button>
                     </div>
+                    {/* Stats Section*/}
                     <div className = {boxStyling}>
                         <h1>Stats</h1>
                         <div className="flex flex-row flex-1 gap-3 items-center">
@@ -46,10 +48,12 @@ export default function UserProfile(){
                             <p>10 K</p>
                         </div>
                     </div>
+                    {/*Progress Section */}
                     <div className = {`${boxStyling} flex-2`}>
                         <h1>Progress</h1>          
                     </div>
                 </div>
+                {/* Posts Section */}
                 <div className={`bg-[#282828] rounded-md p-5 gap-5`}>
                     <div className = "flex flex-row flex-1 gap-2">
                     <h1>Posts</h1>
