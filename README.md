@@ -12,7 +12,14 @@ Note: This project is a work in progress. Some features are still being implemen
 - `Express.js`
 - `AWS`
 # 🚦 Running the Project
-- Enter frontend folder: `cd frontend`
-- Install dependencies: `npm install`
-- Run development server: `npm run dev`
-- Open `http://localhost:5173` in your local browser
+## Backend
+1. Enter backend folder: `cd backend`
+2. Install dependencies: `npm install`
+3. Generate Prisma client: `npx prisma generate`
+4. Add `.env` file with access keys
+5. Run backend server: `npm run dev`
+## Frontend
+1. Enter frontend folder: `cd frontend`
+2. Install dependencies: `npm install`
+3. Run development server: `npm run dev`
+4. Open `http://localhost:5173` in your local browser
