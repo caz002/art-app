@@ -4,7 +4,7 @@
 
 An interactive artist social networking website where users can explore, share, and document their art journey.
 
-Note: This project is a work in progress. Some features are still being implemented, so the site may not work as expected. Follow for more developments!
+**Note:** This project is a work in progress. Some features are still being implemented, so the site may not work as expected. Follow for more developments!
 
 # ✨ Technologies Used
 - `React.js`
