@@ -5,6 +5,7 @@ import express, { Request, Response } from 'express';
 import cors from 'cors';
 import prisma from './lib/prisma';
 import postsRoutes from './routes/postsRoutes';
+import geminiRoutes from "./utils/gemini";
 
 const app = express();
 
@@ -33,6 +34,8 @@ app.get('/', async (req: Request, res: Response) => {
         "POST ONE POST": `http://localhost:${port}/api/posts`,
     })
 })
+app.use(express.json());
+app.use("/gemini/", geminiRoutes);
 
 app.listen(port, () => {
     console.log(`Server is running at http://localhost:${port}`);
