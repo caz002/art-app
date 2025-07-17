@@ -1,7 +1,9 @@
 import { useState } from "react";
+import { useDataContext } from "../contexts/DataContextProvider";
 import Canvas from "./Canvas";
 
 const DailyPromptCard = () => {
+    const { fetchImageData } = useDataContext();
     const [isPopupOpen, setIsPopupOpen] = useState(false);
 
     const handleFileChange = async (
@@ -20,6 +22,7 @@ const DailyPromptCard = () => {
             });
 
             // refresh here
+            fetchImageData();
         } catch (err) {
             console.error("Upload failed", err);
         }

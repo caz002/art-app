@@ -5,7 +5,6 @@ import "./index.css";
 import Home from "./pages/Home.tsx";
 import { DataProvider } from "./contexts/DataContextProvider.tsx";
 import UserProfile from "./pages/UserProfilePage.tsx";
-import CreatePost from "./pages/CreatePostPage.tsx";
 
 // Defines different URL paths for website
 const router = createBrowserRouter([
@@ -16,10 +15,6 @@ const router = createBrowserRouter([
     {
         path: "profile",
         element: <UserProfile />,
-    },
-    {
-        path: "create",
-        element: <CreatePost />,
     },
 ]);
 

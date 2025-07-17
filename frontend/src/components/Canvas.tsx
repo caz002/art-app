@@ -4,12 +4,15 @@ import {
     type ReactSketchCanvasRef,
 } from "react-sketch-canvas";
 import { blobFromBase64 } from "../utils/blobUtils";
+import { useDataContext } from "../contexts/DataContextProvider";
 
 interface CanvasProps {
     onClose: () => void;
 }
 
 const Canvas: React.FC<CanvasProps> = ({ onClose }) => {
+    const { fetchImageData } = useDataContext();
+
     const canvasRef = useRef<ReactSketchCanvasRef>(null);
     const [strokeWidth, setStrokeWidth] = useState(5);
     const [strokeColor, setStrokeColor] = useState("#000000");
@@ -52,8 +55,9 @@ const Canvas: React.FC<CanvasProps> = ({ onClose }) => {
                     body: formData,
                 });
 
-                onClose();
                 // refresh here
+                fetchImageData();
+                onClose();
             } catch (err) {
                 console.error("Upload failed", err);
                 // add error message to user / notification
@@ -127,15 +131,6 @@ const Canvas: React.FC<CanvasProps> = ({ onClose }) => {
                         canvasColor={canvasColor}
                     />
                 </div>
-
-                {/* <div onclick="change_color(this)" style="background:red" class="stroke-color"></div>
-                    <div onclick="change_color(this)" style="background:blue" class="stroke-color"></div>
-                    
-                    <button onclick="Restore()">Undo</button>
-                    <button onclick="Clear()">Clear</button>
-                    
-                    <input type="color" oninput="stroke_color = this.value"/>
-                    <input type="range" min="1" max="100" onInput="stroke_width = this.value"></input> */}
 
                 <button className="mt-4 button" onClick={onClose}>
                     Close

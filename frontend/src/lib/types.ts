@@ -1,9 +1,8 @@
-export const DefaultImageData  = {
-    id: 0,
-    imageKey: "",
-    createdAt: "",
-    updatedAt: "",
-    authorId: 0,
-    imageUrl: "",
+export type ImageData = {
+    id: number;
+    imageKey: string;
+    createdAt: string;
+    updatedAt: string;
+    authorId: number;
+    imageUrl: string;
 }
-export type ImageData = typeof DefaultImageData;

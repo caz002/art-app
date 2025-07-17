@@ -1,13 +1,5 @@
 import type React from "react";
-
-type ImageData = {
-    id: number;
-    imageKey: string;
-    createdAt: string;
-    updatedAt: string;
-    authorId: number;
-    imageUrl: string;
-};
+import type { ImageData } from "../lib/types";
 
 interface PostProps {
     data: ImageData;

@@ -4,20 +4,10 @@ import type { ImageData } from "../lib/types";
 // Stores Data from backend
 interface DataContextType {
     imageData: ImageData[];
-    setImageData: React.Dispatch<
-        React.SetStateAction<
-            {
-                id: number;
-                imageKey: string;
-                createdAt: string;
-                updatedAt: string;
-                authorId: number;
-                imageUrl: string;
-            }[]
-        >
-    >;
     currId: number;
+    setImageData: React.Dispatch<React.SetStateAction<ImageData[]>>;
     setCurrId: React.Dispatch<React.SetStateAction<number>>;
+    fetchImageData: () => void;
 }
 
 const DataContext = createContext<DataContextType | undefined>(undefined);
@@ -42,7 +32,13 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({
 
     return (
         <DataContext.Provider
-            value={{ imageData, setImageData, currId, setCurrId }}
+            value={{
+                imageData,
+                currId,
+                setImageData,
+                setCurrId,
+                fetchImageData,
+            }}
         >
             {children}
         </DataContext.Provider>
