@@ -2,7 +2,7 @@ import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import './index.css'
-import Login from './pages/Login.tsx';
+import Home from './pages/Home.tsx';
 import { DataProvider } from './contexts/DataContextProvider.tsx';
 import UserProfile from './pages/UserProfilePage.tsx';
 import CreatePost from './pages/CreatePostPage.tsx';
@@ -11,7 +11,7 @@ import CreatePost from './pages/CreatePostPage.tsx';
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <Login />,
+    element: <Home />,
   },
   {
     path: "profile",

@@ -1,5 +1,21 @@
+@import url("https://fonts.googleapis.com/css2?family=Roboto&display=swap");
+
 @import "tailwindcss";
-:root {
+
+@theme {
+    --font-display: 'Roboto', sans-serif;
+}
+
+@layer components {
+  .container-border {
+    @apply border-2 border-l-indigo-300 border-t-indigo-300 rounded-xl;
+  }
+  .button {
+    @apply border-2 border-l-indigo-500 border-t-indigo-500 rounded-lg mt-2 p-2 bg-indigo-400 font-semibold hover:bg-indigo-500;
+  }
+}
+
+/* :root {
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
@@ -11,7 +27,7 @@
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-}
+} */
 
 /* a {
   font-weight: 500;
@@ -22,7 +38,7 @@ a:hover {
   color: #535bf2;
 }
 */
-body {
+/* body {
   margin: 0;
   min-height: 100vh;
   padding:5%
