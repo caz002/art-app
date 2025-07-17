@@ -1,7 +1,4 @@
-export default function NavBar(){
+export default function NavBar() {
     // TODO: fill out
-    return(
-        <>
-        </>
-    )
+    return <></>;
 }

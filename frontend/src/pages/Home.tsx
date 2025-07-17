@@ -12,25 +12,25 @@ type ImageData = {
     imageUrl: string;
 };
 
-export default function Home () {
-  const [imageData, setImageData] = useState<ImageData[]>([]);
+export default function Home() {
+    const [imageData, setImageData] = useState<ImageData[]>([]);
 
-  useEffect(() =>{
-    const fetchImageData = async () => {
-      fetch('http://localhost:5001/api/posts', {
-      method: "GET",
-      })
-      .then((data) => data.json())
-      .then((data) => setImageData(data));
-    }
-    fetchImageData();
-  }, []);
+    useEffect(() => {
+        const fetchImageData = async () => {
+            fetch("http://localhost:5001/api/posts", {
+                method: "GET",
+            })
+                .then((data) => data.json())
+                .then((data) => setImageData(data));
+        };
+        fetchImageData();
+    }, []);
 
-  return (
-    <div className="font-display flex flex-col justify-center items-align m-auto max-w-7xl p-8">
-      <MainTitle/>
-      <DailyPromptCard/>
-      <Gallery data={imageData}/>
-    </div>
-  )
+    return (
+        <div className="font-display flex flex-col justify-center items-align m-auto max-w-7xl p-8">
+            <MainTitle />
+            <DailyPromptCard />
+            <Gallery data={imageData} />
+        </div>
+    );
 }
