@@ -9,12 +9,12 @@ if (!apiKey) {
     throw new Error("Missing Gemini API key configuration in environment variables.");
 }
 
-
 const genAI = new GoogleGenerativeAI(apiKey);
 
 let dailyPrompt: {prompt: string, response: string} | null = null;
-// Google Gemini
-router.post("/generate", async (req: Request, res: Response) => {
+
+// Generates prompt from model and stores it in dailyPrompt
+router.get("/generate", async (req: Request, res: Response) => {
     try {
         //const {prompt} = req.body;
         const model = genAI.getGenerativeModel({  model: "gemini-1.5-flash" });
@@ -27,15 +27,8 @@ router.post("/generate", async (req: Request, res: Response) => {
         
     } catch (error) {
         console.error("Gemini API error:", error);
-        res.status(500).json({ error: "Failed to generate content" });
+        res.status(500).json({ error: "Failed to generate content." });
     }
-});
-
-router.get("/getPrompt", (req: Request, res: Response) => {
-    if (!dailyPrompt) {
-        res.status(404).json({ error: 'No prompt has been submitted yet.' });
-    }
-    res.json(dailyPrompt);
 });
 
 export default router;
