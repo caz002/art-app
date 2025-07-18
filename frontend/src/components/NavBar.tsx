@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 
 export default function NavBar() {
     const navigate = useNavigate();
-    // TODO: fill out
     return (
         <div className = "relative flex justify-between items-center w-full container-border p-4 bg-indigo-200">
             <button className="button" onClick = {() => navigate("/")}><img src="/HouseIcon.svg" alt="house icon"></img> </button>
