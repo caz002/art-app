@@ -1,10 +1,11 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useDataContext } from "../contexts/DataContextProvider";
 import Canvas from "./Canvas";
 
 const DailyPromptCard = () => {
     const { fetchImageData } = useDataContext();
     const [isPopupOpen, setIsPopupOpen] = useState(false);
+    const [prompt, setPrompt] = useState<string>("");
 
     const handleFileChange = async (
         event: React.ChangeEvent<HTMLInputElement>
@@ -27,13 +28,26 @@ const DailyPromptCard = () => {
             console.error("Upload failed", err);
         }
     };
+    useEffect(() => {
+        const fetchPrompt = async() =>{
+            try{
+                const response = await fetch("http://localhost:5001/gemini/generate");
+                const result = await response.json();
+                setPrompt(result["response"]);
+            }catch(error){
+                setPrompt("ERROR");
+                console.log("Error fetching prompt: ", error);
+            }
+        }
+        fetchPrompt();
+    }, []);
 
     return (
         <div className="container-border bg-indigo-200 p-4">
             <div className="flex flex-col items-center justify-center">
                 <h2 className="mb-2 text-xl font-bold">Daily Prompt</h2>
                 <div className="container-border text-lg break-words max-w-full bg-indigo-100 pl-30 pr-30 pt-2 pb-2">
-                    This is a 10-word sample prompt for this lovely website.
+                    {prompt == "" ? "Loading..." : prompt}
                 </div>
 
                 <div className="flex gap-4 mt-4">
