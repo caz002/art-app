@@ -1,6 +1,6 @@
 const MainTitle = () => {
     return (
-        <div className="flex flex-col items-center mb-8">
+        <div className="flex flex-col items-center">
             <h1 className="text-3xl font-bold text-indigo-600">
                 Arteva: Draw Now!
             </h1>
