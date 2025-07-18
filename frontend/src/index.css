@@ -11,7 +11,7 @@
         @apply border-2 border-l-indigo-300 border-t-indigo-300 rounded-xl;
     }
     .button {
-        @apply border-2 border-l-indigo-500 border-t-indigo-500 rounded-lg mt-2 p-2 bg-indigo-400 font-semibold hover:bg-indigo-500;
+        @apply border-2 border-l-indigo-500 border-t-indigo-500 rounded-lg p-2 bg-indigo-400 font-semibold hover:bg-indigo-500;
     }
 }
 
