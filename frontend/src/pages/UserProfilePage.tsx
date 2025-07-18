@@ -3,6 +3,7 @@ import BlankImage from "../images/NoImageAvaliable.png";
 import { Link } from "react-router-dom";
 import PostPopup from "./PostPopup";
 import { useDataContext } from "../contexts/DataContextProvider";
+import NavBar from "../components/NavBar";
 
 export default function UserProfile() {
     const [showPopup, setShowPopup] = useState(false);
@@ -16,7 +17,9 @@ export default function UserProfile() {
             {showPopup && (
                 <PostPopup setShowPopup={setShowPopup} imageUrl={popupURL} />
             )}
+            
             <div className="flex flex-col flex-1 gap-5">
+                <NavBar/>
                 <div className="flex flex-row flex-1 justify-between gap-5 flex-wrap">
                     {/* User Info Section */}
                     <div className={boxStyling}>
