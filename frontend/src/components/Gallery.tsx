@@ -78,11 +78,14 @@ const Gallery = () => {
             </div>
 
             {isModalOpen && currentImageIndex !== null && (
-                <div className="fixed inset-0 bg-black/90 flex items-center justify-center z-50">
+                <div className="fixed inset-0 bg-black/90 flex items-center justify-center z-50 ">
                     <div className="border-2 bg-white p-4 rounded-lg max-w-xl w-full">
                         <div className="flex justify-end mb-4">
-                            <button className="button" onClick={closeModal}>
-                                Close
+                            <button
+                                className="button w-12 h-12 flex items-center justify-center"
+                                onClick={closeModal}
+                            >
+                                X
                             </button>
                         </div>
 
@@ -95,7 +98,7 @@ const Gallery = () => {
                         <div className="flex justify-between mt-4">
                             <h2 className="text-xl font-bold">
                                 User {imageData[currentImageIndex].authorId}'s
-                                Sketch
+                                Sketch {imageData[currentImageIndex].id}
                             </h2>
                             <h2 className="text-lg font-semibold">
                                 Date of Creation{" "}
@@ -107,20 +110,20 @@ const Gallery = () => {
 
                         <div className="flex justify-between mt-4">
                             <button
-                                className="button disabled:opacity-50"
+                                className="button w-16 disabled:opacity-50"
                                 onClick={handlePrevClick}
                                 disabled={currentImageIndex === 0}
                             >
-                                Prev
+                                {"<----"}
                             </button>
                             <button
-                                className="button disabled:opacity-50"
+                                className="button w-16 disabled:opacity-50"
                                 onClick={handleNextClick}
                                 disabled={
                                     currentImageIndex === imageData.length - 1
                                 }
                             >
-                                Next
+                                {"---->"}
                             </button>
                         </div>
                     </div>
