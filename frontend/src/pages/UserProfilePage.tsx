@@ -4,25 +4,24 @@ import { Link } from "react-router-dom";
 import PostPopup from "./PostPopup";
 import { useDataContext } from "../contexts/DataContextProvider";
 import NavBar from "../components/NavBar";
+import CalenderHeatmap from "react-calendar-heatmap";
 
 export default function UserProfile() {
     const [showPopup, setShowPopup] = useState(false);
     const { imageData } = useDataContext();
-
     const [popupURL, setPopupURL] = useState("");
-    const boxStyling = "bg-[#282828] rounded-md p-5 flex flex-col flex-1 gap-5";
 
     return (
-        <div className="bg-[#1A1A1A] flex flex-1">
+        <div className="font-display flex flex-col justify-center items-align m-auto max-w-7xl p-8 gap-10">
             {showPopup && (
                 <PostPopup setShowPopup={setShowPopup} imageUrl={popupURL} />
             )}
-            
+
             <div className="flex flex-col flex-1 gap-5">
-                <NavBar/>
-                <div className="flex flex-row flex-1 justify-between gap-5 flex-wrap">
+                <NavBar />
+                <div className="flex flex-row flex-1 justify-between gap-5  flex-wrap">
                     {/* User Info Section */}
-                    <div className={boxStyling}>
+                    <div className="container-border bg-indigo-200 p-5 flex flex-col flex-1 gap-5">
                         <div className="flex flex-row flex-1 gap-5">
                             <img
                                 src={BlankImage}
@@ -34,12 +33,10 @@ export default function UserProfile() {
                                 <p>This is my biography</p>
                             </div>
                         </div>
-                        <button className="bg-white text-[#1A1A1A] rounded-md p-2">
-                            Edit Profile
-                        </button>
+                        <button className="button">Edit Profile</button>
                     </div>
                     {/* Stats Section*/}
-                    <div className={boxStyling}>
+                    <div className="container-border bg-indigo-200 p-5 flex flex-col flex-1 gap-5">
                         <h1>Stats</h1>
                         <div className="flex flex-row flex-1 gap-3 items-center">
                             <img src="/ViewsIcon.svg" className="w-6 h-6" />
@@ -58,12 +55,25 @@ export default function UserProfile() {
                         </div>
                     </div>
                     {/*Progress Section */}
-                    <div className={`${boxStyling} flex-2`}>
+                    <div className="container-border bg-indigo-200 p-5 flex flex-col flex-2 gap-5 justify-center">
                         <h1>Progress</h1>
+                        <div>
+                            <CalenderHeatmap
+                                startDate={new Date("2025-02-01")}
+                                endDate={new Date("2025-7-31")}
+                                showMonthLabels={true}
+                                values={[
+                                    { date: "2025-04-01", count: 12 },
+                                    { date: "2025-04-22", count: 12 },
+                                    { date: "2025-0-30", count: 38 },
+                                ]}
+                            />
+                        </div>
                     </div>
                 </div>
+
                 {/* Posts Section */}
-                <div className={`bg-[#282828] rounded-md p-5 gap-5`}>
+                <div className={`container-border bg-indigo-200 p-8 gap-5`}>
                     <div className="flex flex-row flex-1 gap-2">
                         <h1>Posts</h1>
                         <Link to="/create">
