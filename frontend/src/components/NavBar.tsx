@@ -3,15 +3,14 @@ import { useNavigate } from "react-router-dom";
 
 export default function NavBar() {
     const navigate = useNavigate();
+    const buttonStyle = "text-xl px-4 py-2 rounded-lg hover:bg-gray-300"
     return (
-        <div className = "relative flex justify-between items-center w-full container-border p-4 bg-indigo-200">
-            <button className="button" onClick = {() => navigate("/")}><img src="/HouseIcon.svg" alt="house icon"></img> </button>
-            <div className="absolute left-1/2 transform -translate-x-1/2">
-                <MainTitle/>
-            </div>
-            <div className="flex flex-row gap-2">
-                <button className="button" onClick = {() => window.location.href= "https://buymeacoffee.com/"}><img src="/CoffeeIcon.svg" alt="house icon"></img> </button>
-                <button className="button" onClick = {() => navigate("/profile")}><img src="/ProfileIcon.svg" alt="house icon"></img> </button>
+        <div className = "fixed top-0 flex justify-between items-center border-b-black border-solid border-b-2 w-full p-8 bg-white">       
+            <MainTitle/>
+            <div className="flex flex-row gap-10">
+                <button className={buttonStyle} onClick = {() => navigate("/")}>Home</button>
+                <button className={buttonStyle} onClick = {() => window.location.href= "https://buymeacoffee.com/"}>Support Us</button>
+                <button className={`${buttonStyle} bg-black text-white`} onClick = {() => navigate("/login")}>Login</button>
             </div>
         </div>
     );
