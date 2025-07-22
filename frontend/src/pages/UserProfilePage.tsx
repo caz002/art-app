@@ -4,9 +4,11 @@ import UserPanel from "../components/User/UserPanel";
 
 export default function UserProfile() {
     return (
-        <div className="font-display flex flex-col justify-center items-align m-auto max-w-7xl p-8 gap-10">
+        <div>
+            <NavBar />
+        <div className="font-display flex flex-col justify-center items-align m-auto max-w-7xl p-8 gap-10 mt-30">
             <div className="flex flex-col flex-1 gap-5">
-                <NavBar />
+                
 
                 <UserPanel />
 
@@ -25,6 +27,7 @@ export default function UserProfile() {
 
                 <Gallery />
             </div>
+        </div>
         </div>
     );
 }
