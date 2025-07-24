@@ -35,7 +35,7 @@ const DailyPromptCard = () => {
                     "http://localhost:5001/prompt/gemini"
                 );
                 const result = await response.json();
-                setPrompt(result["response"]);
+                setPrompt(result);
             } catch (error) {
                 setPrompt("ERROR");
                 console.log("Error fetching prompt: ", error);
