@@ -31,18 +31,29 @@ export default function NavBar() {
         >
           Support Us
         </button>
-        <button
-          className={`${buttonStyle} bg-black text-white`}
-          onClick={() => navigate("/login")}
-        >
-          Login
-        </button>
-        <button
-          className={`${buttonStyle} bg-black text-white`}
-          onClick={handleSignOut}
-        >
-          Sign Out
-        </button>
+        {session == undefined ? (
+          <button
+            className={`${buttonStyle} bg-black text-white`}
+            onClick={() => navigate("/login")}
+          >
+            Login
+          </button>
+        ) : (
+          <>
+            <button
+              className={buttonStyle}
+              onClick={() => navigate("/profile")}
+            >
+              Profile
+            </button>
+            <button
+              className={`${buttonStyle} bg-black text-white`}
+              onClick={handleSignOut}
+            >
+              Sign Out
+            </button>
+          </>
+        )}
       </div>
     </div>
   );
