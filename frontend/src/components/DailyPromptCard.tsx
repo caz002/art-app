@@ -29,16 +29,18 @@ const DailyPromptCard = () => {
         }
     };
     useEffect(() => {
-        const fetchPrompt = async() =>{
-            try{
-                const response = await fetch("http://localhost:5001/gemini/generate");
+        const fetchPrompt = async () => {
+            try {
+                const response = await fetch(
+                    "http://localhost:5001/prompt/gemini"
+                );
                 const result = await response.json();
-                setPrompt(result["response"]);
-            }catch(error){
+                setPrompt(result);
+            } catch (error) {
                 setPrompt("ERROR");
                 console.log("Error fetching prompt: ", error);
             }
-        }
+        };
         fetchPrompt();
     }, []);
 
