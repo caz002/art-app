@@ -3,42 +3,12 @@ import { useDataContext } from "../contexts/DataContextProvider";
 import Post from "./Post";
 
 const Gallery = () => {
-    const { imageData } = useDataContext();
+    const { imageData, hasMore, fetchImageData } = useDataContext();
 
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [currentImageIndex, setCurrentImageIndex] = useState<number | null>(
         null
     );
-
-    // const handleKeyDown = useCallback(
-    //     (event: KeyboardEvent) => {
-    //         if (event.key === "Escape") {
-    //             setIsModalOpen(false);
-    //             setCurrentImageIndex(null);
-    //         } else if (event.key === "ArrowLeft") {
-    //             // console.log("currentImageIndex", currentImageIndex);
-    //             if (currentImageIndex !== null && currentImageIndex > 0) {
-    //                 setCurrentImageIndex(currentImageIndex - 1);
-    //             }
-    //         } else if (event.key === "ArrowRight") {
-    //             // console.log("currentImageIndex", currentImageIndex);
-    //             if (
-    //                 currentImageIndex !== null &&
-    //                 currentImageIndex < imageData.length - 1
-    //             ) {
-    //                 setCurrentImageIndex(currentImageIndex + 1);
-    //             }
-    //         }
-    //     },
-    //     [currentImageIndex]
-    // );
-
-    // useEffect(() => {
-    //     window.addEventListener("keydown", handleKeyDown);
-    //     return () => {
-    //         window.removeEventListener("keydown", handleKeyDown);
-    //     };
-    // }, [handleKeyDown]);
 
     const openModal = (index: number) => {
         console.log("Opening modal for index:", index);
@@ -55,6 +25,10 @@ const Gallery = () => {
         if (currentImageIndex !== null && currentImageIndex > 0) {
             setCurrentImageIndex(currentImageIndex - 1);
         }
+    };
+
+    const handleLoadMore = () => {
+        fetchImageData();
     };
 
     const handleNextClick = () => {
@@ -74,6 +48,16 @@ const Gallery = () => {
                             <Post data={item} />
                         </div>
                     ))}
+                </div>
+
+                <div className="flex items-center justify-center">
+                    <button
+                        className="button m-5 pl-8 pr-8 disabled:opacity-50"
+                        onClick={handleLoadMore}
+                        disabled={!hasMore}
+                    >
+                        Load More!
+                    </button>
                 </div>
             </div>
 
