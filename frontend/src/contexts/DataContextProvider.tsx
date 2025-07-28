@@ -5,6 +5,7 @@ import type { ImageData } from "../lib/types";
 interface DataContextType {
     imageData: ImageData[];
     currId: number;
+    hasMore: boolean;
     setImageData: React.Dispatch<React.SetStateAction<ImageData[]>>;
     setCurrId: React.Dispatch<React.SetStateAction<number>>;
     fetchImageData: () => void;
@@ -17,13 +18,33 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({
 }) => {
     const [imageData, setImageData] = useState<ImageData[]>([]);
     const [currId, setCurrId] = useState(0);
+    const [cursorId, setCursorId] = useState<number | null>(null);
+    const [hasMore, setHasMore] = useState(true);
 
     const fetchImageData = async () => {
-        fetch("http://localhost:5001/api/posts", {
+        if (!hasMore) return;
+
+        const url = cursorId
+            ? `http://localhost:5001/api/posts?cursor=${cursorId}`
+            : `http://localhost:5001/api/posts`;
+
+        const res = await fetch(url, {
             method: "GET",
-        })
-            .then((data) => data.json())
-            .then((data) => setImageData(data));
+        });
+
+        const json = await res.json();
+
+        const newPosts = json;
+        // console.log(newPosts);
+        setImageData((prev) => [...prev, ...newPosts]);
+
+        if (newPosts.length > 0) {
+            setCursorId(newPosts[newPosts.length - 1].id);
+        }
+
+        if (newPosts.length < 12) {
+            setHasMore(false);
+        }
     };
 
     useEffect(() => {
@@ -35,6 +56,7 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({
             value={{
                 imageData,
                 currId,
+                hasMore,
                 setImageData,
                 setCurrId,
                 fetchImageData,
