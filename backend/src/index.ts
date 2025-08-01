@@ -5,6 +5,7 @@ import { BadRequestError } from "./utils/errors";
 import cors from "cors";
 import postsRoutes from "./routes/postsRoutes";
 import promptRoutes from "./routes/promptRoutes";
+import { respondWithError } from "./utils/json";
 
 const PORT = config.app.port;
 const app = express();
@@ -21,6 +22,10 @@ app.get("/", async (req: Request, res: Response) => {
         "GET ALL POSTS": `http://localhost:${PORT}/api/posts`,
         "POST ONE POST": `http://localhost:${PORT}/api/posts`,
     });
+});
+
+app.use((req: Request, res: Response) => {
+    respondWithError(res, 404, "Page not found.");
 });
 
 app.use(errorMiddleware);
