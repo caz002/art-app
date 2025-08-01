@@ -1,4 +1,5 @@
 import multer, { FileFilterCallback } from "multer";
+import { BadRequestError } from "../utils/errors";
 export const upload = multer({
     storage: multer.memoryStorage(),
     limits: {
@@ -15,7 +16,9 @@ export const upload = multer({
             callback(null, true);
         } else {
             callback(null, false);
-            callback(new Error("Only images and videos formats allowed!"));
+            callback(
+                new BadRequestError("Only images and videos formats allowed!")
+            );
         }
     },
 });
