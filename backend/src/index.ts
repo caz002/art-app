@@ -4,6 +4,7 @@ import { errorMiddleware } from "./middleware/errorMiddleware";
 import cors from "cors";
 import postsRoutes from "./routes/postsRoutes";
 import promptRoutes from "./routes/promptRoutes";
+import authRoutes from "./routes/authRoutes";
 import { respondWithError } from "./utils/json";
 
 const PORT = config.app.port;
@@ -13,6 +14,7 @@ const app = express();
 app.use(express.json());
 
 app.use(cors());
+app.use("/auth", authRoutes);
 app.use("/api/posts", postsRoutes);
 app.use("/prompt", promptRoutes);
 app.get("/", async (req: Request, res: Response) => {
