@@ -18,15 +18,16 @@ model Post {
   imageKey  String // S3 Key
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  author    User     @relation(fields: [authorId], references: [id])
+  author    User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
   authorId  String
 }
 
 model User {
-  id    String @id @default(uuid())
-  email String @unique
-  name  String
-  posts Post[]
+  id             String @id @default(uuid())
+  email          String @unique
+  name           String
+  posts          Post[]
+  hashedPassword String @default("NOTSET")
 }
 
 model Prompt {
