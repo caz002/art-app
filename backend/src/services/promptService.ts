@@ -1,4 +1,5 @@
-import prisma from "../lib/prisma";
+import { BadGatewayError } from "../utils/errors";
+import prisma from "../utils/prisma";
 
 export const addDailyPrompt = async (newPrompt: string) => {
     const date = new Date();
@@ -14,10 +15,7 @@ export const addDailyPrompt = async (newPrompt: string) => {
 
         return prompt;
     } catch (error) {
-        console.log(
-            `AddPrompt Error: `,
-            error instanceof Error ? error.message : "Unknown Error"
-        );
+        throw new BadGatewayError("Upstream database unavailable");
     }
 };
 
@@ -34,9 +32,6 @@ export const getDailyPrompt = async () => {
 
         return prompt;
     } catch (error) {
-        console.log(
-            `getPrompt Error: `,
-            error instanceof Error ? error.message : "Unknown Error"
-        );
+        throw new BadGatewayError("Upstream database unavailable");
     }
 };

@@ -4,16 +4,12 @@ import {
     getAllPosts,
     getPostById,
     deletePost,
-    getFixedPosts,
 } from "../controllers/postsController";
-import multer from "multer";
+import { upload } from "../middleware/multerMiddleware";
 
-const storage = multer.memoryStorage();
-const upload = multer({ storage: storage });
 const router = express.Router();
 
-// router.get("/", getAllPosts);
-router.get("/", getFixedPosts);
+router.get("/", getAllPosts);
 router.get("/:id", getPostById);
 router.post("/", upload.single("postImage"), createPost);
 router.delete("/:id", deletePost);

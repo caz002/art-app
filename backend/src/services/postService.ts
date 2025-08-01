@@ -1,8 +1,9 @@
-import prisma from "../lib/prisma";
+import { BadGatewayError } from "../utils/errors";
+import prisma from "../utils/prisma";
 
 interface CreatePostData {
     imageKey: string;
-    authorId: number;
+    authorId: string;
 }
 
 export const addPost = async (data: CreatePostData) => {
@@ -16,11 +17,7 @@ export const addPost = async (data: CreatePostData) => {
 
         return post;
     } catch (error) {
-        console.log(
-            `CreatePost Error: `,
-            error instanceof Error ? error.message : "Unknown Error"
-        );
-        throw error;
+        throw new BadGatewayError("Upstream database unavailable");
     }
 };
 
@@ -31,38 +28,11 @@ export const findAllPosts = async () => {
         });
         return posts;
     } catch (error) {
-        console.log(
-            `findAllPosts Error: `,
-            error instanceof Error ? error.message : "Unknown Error"
-        );
-        throw error;
+        throw new BadGatewayError("Upstream database unavailable");
     }
 };
 
-export const findFixedPosts = async (cursor?: number) => {
-    try {
-        const posts = await prisma.post.findMany({
-            take: 12,
-            ...(cursor && {
-                skip: 1,
-                cursor: {
-                    id: cursor,
-                },
-            }),
-            orderBy: [{ createdAt: "desc" }],
-        });
-
-        return posts;
-    } catch (error) {
-        console.log(
-            `findFixedPosts Error: `,
-            error instanceof Error ? error.message : `Unknown Error`
-        );
-        throw error;
-    }
-};
-
-export const findPostById = async (id: number) => {
+export const findPostById = async (id: string) => {
     try {
         const post = await prisma.post.findUnique({
             where: {
@@ -72,15 +42,11 @@ export const findPostById = async (id: number) => {
 
         return post;
     } catch (error) {
-        console.log(
-            `findPostById Error: `,
-            error instanceof Error ? error.message : "Unknown Error"
-        );
-        throw error;
+        throw new BadGatewayError("Upstream database unavailable");
     }
 };
 
-export const deletePostById = async (id: number) => {
+export const deletePostById = async (id: string) => {
     try {
         const post = await prisma.post.delete({
             where: {
@@ -90,10 +56,6 @@ export const deletePostById = async (id: number) => {
 
         return post;
     } catch (error) {
-        console.log(
-            `deletePostById Error: `,
-            error instanceof Error ? error.message : "Unknown Error"
-        );
-        throw error;
+        throw new BadGatewayError("Upstream database unavailable");
     }
 };
