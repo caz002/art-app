@@ -36,7 +36,6 @@
     "@google/generative-ai": "^0.24.1",
     "@prisma/client": "^6.12.0",
     "cors": "^2.8.5",
-    "dotenv": "^17.0.1",
     "multer": "^2.0.1",
     "sharp": "^0.34.2",
     "uuid": "^11.1.0"
