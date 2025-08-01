@@ -7,7 +7,6 @@ import {
     findPostById,
     deletePostById,
 } from "../services/postService";
-import sharp from "sharp";
 import {
     getCloudFrontSignedUrl,
     invalidateCloudFrontImage,

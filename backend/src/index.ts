@@ -1,7 +1,6 @@
 import { config } from "./config";
 import express, { Request, Response } from "express";
 import { errorMiddleware } from "./middleware/errorMiddleware";
-import { BadRequestError } from "./utils/errors";
 import cors from "cors";
 import postsRoutes from "./routes/postsRoutes";
 import promptRoutes from "./routes/promptRoutes";
