@@ -1,4 +1,5 @@
-import jwt, { Jwt, JwtPayload } from "jsonwebtoken";
+import jwt, { JwtPayload } from "jsonwebtoken";
+import { Request } from "express";
 import { config } from "../../config";
 import { UserNotAuthenticatedError } from "../errors";
 
@@ -43,4 +44,17 @@ export function issueJWT(userId: string) {
         privateKey
     );
     return jwtToken;
+}
+
+export function getBearer(req: Request) {
+    let bearer = req.get("Authorization");
+
+    if (!bearer) {
+        throw new UserNotAuthenticatedError("No bearer.");
+    }
+
+    let token = bearer.replace("Bearer", "");
+    token = bearer.trim();
+
+    return token;
 }

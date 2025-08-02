@@ -12,10 +12,18 @@ import {
     invalidateCloudFrontImage,
 } from "../utils/aws/cloudfront";
 import { respondWithJSON } from "../utils/json";
-import { BadRequestError, NotFoundError } from "../utils/errors";
+import {
+    BadRequestError,
+    NotFoundError,
+    UserNotAuthenticatedError,
+} from "../utils/errors";
 import { resizeImageBuffer } from "../utils/image";
+import { getBearer, validateJWT } from "../utils/auth/jwt";
 
 export const createPost = async (req: Request, res: Response) => {
+    const accessToken = getBearer(req);
+    const userId = validateJWT(accessToken);
+
     if (!req.file) {
         throw new BadRequestError("Missing required fields.");
     }
@@ -25,21 +33,31 @@ export const createPost = async (req: Request, res: Response) => {
 
     await putNewS3ImageObject(imageKey, buffer, req.file.mimetype);
 
+    // Use for testing, authorId : "e650cdb6-0067-4d99-9d3f-2f4bd9f67577"
     const post = await addPost({
         imageKey: imageKey,
-        authorId: "e650cdb6-0067-4d99-9d3f-2f4bd9f67577",
+        authorId: userId,
     });
 
     respondWithJSON(res, 201, post);
 };
 
 export const deletePost = async (req: Request, res: Response) => {
-    const id = req.params.id;
+    const accessToken = getBearer(req);
+    const userId = validateJWT(accessToken);
 
+    const id = req.params.id;
     const post = await findPostById(id);
 
     if (!post) {
         throw new NotFoundError(`Post with ID ${id} not found.`);
+    }
+
+    const authorId = post.authorId;
+    if (authorId !== userId) {
+        throw new UserNotAuthenticatedError(
+            `This post cannot be deleted by this user.`
+        );
     }
 
     const imageKey = post.imageKey;
