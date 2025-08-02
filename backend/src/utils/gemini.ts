@@ -1,13 +1,7 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
+import { config } from "../config";
 
-const apiKey = process.env.GEMINI_API_KEY;
-if (!apiKey) {
-    throw new Error(
-        "Missing Gemini API key configuration in environment variables."
-    );
-}
-
-const genAI = new GoogleGenerativeAI(apiKey);
+const genAI = new GoogleGenerativeAI(config.gemini.apiKey);
 
 export const fetchGeminiPromptText = async () => {
     try {
