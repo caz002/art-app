@@ -16,6 +16,7 @@ type DBConfig = {
 };
 
 type JWTConfig = {
+    saltRounds: number;
     defaultDuration: number;
     refreshDuration: number;
     secret: string;
@@ -59,6 +60,7 @@ export const config: Config = {
         directUrl: envOrThrow("DIRECT_URL"),
     },
     jwt: {
+        saltRounds: 10,
         defaultDuration: 3600, // 1 HR
         refreshDuration: 60 * 86400, // 60 DAYS
         secret: envOrThrow("SECRET_KEY"),
