@@ -2,6 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import {
     BadGatewayError,
     BadRequestError,
+    ConflictError,
     NotFoundError,
     UserForbiddenError,
     UserNotAuthenticatedError,
@@ -39,6 +40,11 @@ export function errorMiddleware(
 
     if (err instanceof BadGatewayError) {
         statusCode = 502;
+        message = err.message;
+    }
+
+    if (err instanceof ConflictError) {
+        statusCode = 409;
         message = err.message;
     }
 
