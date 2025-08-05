@@ -1,16 +1,21 @@
 <img src = https://github.com/user-attachments/assets/6cd7cb89-8926-451b-9f05-cda9b55eedc7/ style="margin:-20px 0 0 -10px;"></img>
 
-# Welcome to Arteva!
+# Welcome to DailySketch!
 
-An interactive artist social networking website where users can explore, share, and document their art journey.
+An artist social networking website where users can explore, share, and document their art journey.
 
-**Note:** This project is a work in progress. Some features are still being implemented, so the site may not work as expected. Follow for more developments!
+**Note:** This project is a work in progress, which means new features are still being implemented. Follow for more developments!
 
 # ✨ Technologies Used
 - `React.js`
 - `Tailwind CSS`
 - `Express.js`
 - `AWS`
+- `Google Gemini API`
+# ✏️ Features
+- **Sketch Board:** Paint on an online sketch canvas and post your creations for others to review.
+- **Sketch Inspiration**: A creative prompt is released daily to inspire users to draw.
+- **Progress Tracker**: Creates a visual history of your posts, helping grow your skills and consistency over time.
 # 🚦 Running the Project
 ## Backend
 1. Enter backend folder: `cd backend`
