@@ -73,10 +73,21 @@ export const deletePost = async (req: Request, res: Response) => {
 };
 
 export const getAllPosts = async (req: Request, res: Response) => {
+    let userId = "";
+    let userIdQuery = req.query.userId;
+    if (typeof userIdQuery == "string") {
+        userId = userIdQuery;
+    }
+
     const posts = await findAllPosts();
 
+    // It is probably better to query the database itself with the query, but this is a short term solution.
+    const filteredPosts = posts.filter(
+        (post) => post.authorId === userId || userId === ""
+    );
+
     const postsWithUrls = await Promise.all(
-        posts.map(async (post) => {
+        filteredPosts.map(async (post) => {
             const signedUrl = await getCloudFrontSignedUrl(post.imageKey);
             return {
                 ...post,
