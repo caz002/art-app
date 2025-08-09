@@ -19,12 +19,12 @@ export function errorMiddleware(
     let statusCode = 500;
     let message = "Something went wrong on our end.";
     if (err instanceof BadRequestError) {
-        statusCode = 401;
+        statusCode = 400;
         message = err.message;
     }
 
     if (err instanceof UserNotAuthenticatedError) {
-        statusCode = 402;
+        statusCode = 401;
         message = err.message;
     }
 
