@@ -54,7 +54,7 @@ export function getBearer(req: Request) {
     }
 
     let token = bearer.replace("Bearer", "");
-    token = bearer.trim();
+    token = token.trim();
 
     return token;
 }

@@ -5,6 +5,7 @@ import {
 } from "react-sketch-canvas";
 import { blobFromBase64 } from "../utils/blobUtils";
 import { useDataContext } from "../contexts/DataContextProvider";
+import { createPost } from "../api";
 
 interface CanvasProps {
     onClose: () => void;
@@ -48,13 +49,8 @@ const Canvas: React.FC<CanvasProps> = ({ onClose }) => {
 
             const formData = new FormData();
             formData.append("postImage", blob);
-
             try {
-                await fetch("http://localhost:5001/api/posts", {
-                    method: "POST",
-                    body: formData,
-                });
-
+                await createPost(formData);
                 // refresh here
                 fetchImageData();
                 onClose();

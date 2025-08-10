@@ -61,7 +61,7 @@ export const config: Config = {
     },
     jwt: {
         saltRounds: 10,
-        defaultDuration: 3600, // 1 HR
+        defaultDuration: 60 * 60 * 1000, // 1 HR
         refreshDuration: 60 * 86400, // 60 DAYS
         secret: envOrThrow("SECRET_KEY"),
         issuer: envOrThrow("ISSUER"),

@@ -18,12 +18,22 @@ export async function handleRegister(req: Request, res: Response) {
         throw new BadRequestError("Missing required fields.");
     }
 
-    const email = params.email;
+    const email = params.email; // we need to add verification to this
     const name = params.name;
     const password = params.password;
 
     const hashedPassword = await hashPassword(password);
     const newUser = await addUser({ email, name, hashedPassword });
+
+    const accessToken = issueJWT(newUser.id);
+
+    res.cookie("accessToken", accessToken, {
+        path: "/",
+        httpOnly: true,
+        secure: false,
+        sameSite: "lax",
+        maxAge: 10 * 60 * 1000,
+    });
 
     respondWithJSON(res, 201, {
         id: newUser.id,
@@ -64,10 +74,17 @@ export async function handleLogin(req: Request, res: Response) {
     // Return a JWT Token 1HR
     const accessToken = issueJWT(user.id);
 
+    res.cookie("accessToken", accessToken, {
+        path: "/",
+        httpOnly: true,
+        secure: false,
+        sameSite: "lax",
+        maxAge: 10 * 60 * 1000,
+    });
+
     respondWithJSON(res, 200, {
         id: user.id,
         name: user.name,
-        token: accessToken,
     });
 }
 export async function handleRefreshToken(req: Request, res: Response) {}
