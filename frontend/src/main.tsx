@@ -4,7 +4,6 @@ import "./index.css";
 import Home from "./pages/Home.tsx";
 import { DataProvider } from "./contexts/DataContextProvider.tsx";
 import UserProfile from "./pages/UserProfilePage.tsx";
-import CreatePost from "./pages/CreatePostPage.tsx";
 import LoginPage from "./pages/LoginPage.tsx";
 import CreateAccountPage from "./pages/CreateAccountPage.tsx";
 
@@ -17,10 +16,6 @@ const router = createBrowserRouter([
     {
         path: "profile",
         element: <UserProfile />,
-    },
-    {
-        path: "create",
-        element: <CreatePost />,
     },
     {
         path: "login",

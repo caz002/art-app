@@ -21,7 +21,8 @@ import { resizeImageBuffer } from "../utils/image";
 import { getBearer, validateJWT } from "../utils/auth/jwt";
 
 export const createPost = async (req: Request, res: Response) => {
-    const accessToken = getBearer(req);
+    // const accessToken = getBearer(req);
+    const accessToken = req.cookies.accessToken;
     const userId = validateJWT(accessToken);
 
     if (!req.file) {
@@ -43,7 +44,7 @@ export const createPost = async (req: Request, res: Response) => {
 };
 
 export const deletePost = async (req: Request, res: Response) => {
-    const accessToken = getBearer(req);
+    const accessToken = req.cookies.accessToken;
     const userId = validateJWT(accessToken);
 
     const id = req.params.id;

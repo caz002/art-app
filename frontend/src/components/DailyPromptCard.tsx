@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useDataContext } from "../contexts/DataContextProvider";
 import Canvas from "./Canvas";
+import { createPost } from "../api";
 
 const DailyPromptCard = () => {
     const { fetchImageData } = useDataContext();
@@ -15,16 +16,12 @@ const DailyPromptCard = () => {
 
         const formData = new FormData();
         formData.append("postImage", file);
-
         try {
-            await fetch("http://localhost:5001/api/posts", {
-                method: "POST",
-                body: formData,
-            });
-
+            await createPost(formData);
             // refresh here
             fetchImageData();
         } catch (err) {
+            // authorization error check here and ask user to relog again
             console.error("Upload failed", err);
         }
     };

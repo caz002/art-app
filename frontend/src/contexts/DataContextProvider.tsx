@@ -5,7 +5,8 @@ import type { ImageData } from "../lib/types";
 interface DataContextType {
     imageData: ImageData[];
     currId: number;
-    hasMore: boolean;
+    isLoggedIn: boolean;
+    setIsLoggedIn: React.Dispatch<React.SetStateAction<boolean>>;
     setImageData: React.Dispatch<React.SetStateAction<ImageData[]>>;
     setCurrId: React.Dispatch<React.SetStateAction<number>>;
     fetchImageData: () => void;
@@ -18,15 +19,10 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({
 }) => {
     const [imageData, setImageData] = useState<ImageData[]>([]);
     const [currId, setCurrId] = useState(0);
-    const [cursorId, setCursorId] = useState<number | null>(null);
-    const [hasMore, setHasMore] = useState(true);
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
 
     const fetchImageData = async () => {
-        if (!hasMore) return;
-
-        const url = cursorId
-            ? `http://localhost:5001/api/posts?cursor=${cursorId}`
-            : `http://localhost:5001/api/posts`;
+        const url = `http://localhost:5001/api/posts`;
 
         const res = await fetch(url, {
             method: "GET",
@@ -36,15 +32,7 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({
 
         const newPosts = json;
         // console.log(newPosts);
-        setImageData((prev) => [...prev, ...newPosts]);
-
-        if (newPosts.length > 0) {
-            setCursorId(newPosts[newPosts.length - 1].id);
-        }
-
-        if (newPosts.length < 12) {
-            setHasMore(false);
-        }
+        setImageData(newPosts);
     };
 
     useEffect(() => {
@@ -56,7 +44,8 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({
             value={{
                 imageData,
                 currId,
-                hasMore,
+                isLoggedIn,
+                setIsLoggedIn,
                 setImageData,
                 setCurrId,
                 fetchImageData,

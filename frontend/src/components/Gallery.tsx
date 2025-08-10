@@ -3,7 +3,7 @@ import { useDataContext } from "../contexts/DataContextProvider";
 import Post from "./Post";
 
 const Gallery = () => {
-    const { imageData, hasMore, fetchImageData } = useDataContext();
+    const { imageData } = useDataContext();
 
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [currentImageIndex, setCurrentImageIndex] = useState<number | null>(
@@ -27,10 +27,6 @@ const Gallery = () => {
         }
     };
 
-    const handleLoadMore = () => {
-        fetchImageData();
-    };
-
     const handleNextClick = () => {
         if (
             currentImageIndex !== null &&
@@ -48,16 +44,6 @@ const Gallery = () => {
                             <Post data={item} />
                         </div>
                     ))}
-                </div>
-
-                <div className="flex items-center justify-center">
-                    <button
-                        className="button m-5 pl-8 pr-8 disabled:opacity-50"
-                        onClick={handleLoadMore}
-                        disabled={!hasMore}
-                    >
-                        Load More!
-                    </button>
                 </div>
             </div>
 
