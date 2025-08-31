@@ -1,27 +1,119 @@
-import type React from "react";
-import type { ImageData } from "../lib/types";
+import { Link } from "@tanstack/react-router";
+import { Card, CardContent, CardHeader } from "./ui/card";
+import { Button } from "./ui/button";
+import { Trash } from "lucide-react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import {
+    deletePost,
+    getPostsByProfileQueryOptions,
+    getPostsQueryOptions,
+} from "@/lib/api";
+import { toast } from "sonner";
 
 interface PostProps {
-    data: ImageData;
+    id: number;
+    userId: string;
+    userName?: string;
+    createdAt: string;
+    imageUrl: string;
+    caption: string;
 }
 
-const Post: React.FC<PostProps> = ({ data }) => {
+export function Post({
+    id,
+    userId,
+    userName,
+    createdAt,
+    imageUrl,
+    caption,
+}: PostProps) {
     return (
-        <div className="w-full max-w-xs border-2 border-indigo-400 rounded-lg p-4 bg-white shadow-lg flex flex-col items-center transition-transform duration-300 hover:scale-105">
-            <img
-                src={data.imageUrl}
-                alt="Post"
-                className=" object-cover w-full h-full rounded-lg"
-            />
-
-            <div className="mt-4">
-                <h3>
-                    By User {data.authorId} on{" "}
-                    {new Date(data.createdAt).toLocaleDateString()}
-                </h3>
-            </div>
-        </div>
+        <Card>
+            <CardHeader>
+                <div className="flex items-center justify-between">
+                    {userName && (
+                        <Link
+                            to="/profile/$userId"
+                            params={{ userId }}
+                            className="[&.active]:font-bold"
+                        >
+                            {userName}
+                        </Link>
+                    )}
+                    <span className="text-sm text-gray-500">
+                        {new Intl.DateTimeFormat("en-CA").format(
+                            new Date(createdAt)
+                        )}
+                    </span>
+                </div>
+            </CardHeader>
+            <CardContent>
+                <img
+                    src={imageUrl}
+                    alt={`${userName}'s post`}
+                    className="w-full object-cover rounded-md"
+                />
+                <div className="mt-2  grid grid-cols-[5fr_1fr]">
+                    <div>
+                        <p className="text-sm">{caption}</p>
+                    </div>
+                    <PostDeleteButton userId={userId} id={id} />
+                </div>
+            </CardContent>
+        </Card>
     );
-};
+}
 
-export default Post;
+function PostDeleteButton({ userId, id }: { userId: string; id: number }) {
+    const queryClient = useQueryClient();
+    const mutation = useMutation({
+        mutationFn: deletePost,
+        onError: () => {
+            toast("Error", {
+                description: `Failed to delete post: ${id}`,
+            });
+        },
+        onSuccess: () => {
+            toast(`Post Successfully Deleted!`, {
+                description: `Successfully deleted post: ${id}`,
+            });
+
+            queryClient.setQueryData(
+                getPostsByProfileQueryOptions(userId).queryKey,
+                (existingPosts) => {
+                    if (!existingPosts) return existingPosts;
+                    return {
+                        ...existingPosts,
+                        posts: existingPosts.posts.filter(
+                            (post) => post.id !== id
+                        ),
+                    };
+                }
+            );
+
+            queryClient.setQueryData(
+                getPostsQueryOptions.queryKey,
+                (existingPosts) => {
+                    if (!existingPosts) return existingPosts;
+                    return {
+                        ...existingPosts,
+                        posts: existingPosts.posts.filter(
+                            (post) => post.id !== id
+                        ),
+                    };
+                }
+            );
+        },
+    });
+
+    return (
+        <Button
+            disabled={mutation.isPending}
+            variant="outline"
+            size="icon"
+            onClick={() => mutation.mutate({ id })}
+        >
+            <Trash className="h-4 w-4"></Trash>
+        </Button>
+    );
+}

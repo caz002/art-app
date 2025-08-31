@@ -1,34 +1,28 @@
+import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import "./index.css";
-import Home from "./pages/Home.tsx";
-import { DataProvider } from "./contexts/DataContextProvider.tsx";
-import UserProfile from "./pages/UserProfilePage.tsx";
-import LoginPage from "./pages/LoginPage.tsx";
-import CreateAccountPage from "./pages/CreateAccountPage.tsx";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { RouterProvider, createRouter } from "@tanstack/react-router";
 
-// Defines different URL paths for website
-const router = createBrowserRouter([
-    {
-        path: "/",
-        element: <Home />,
-    },
-    {
-        path: "profile",
-        element: <UserProfile />,
-    },
-    {
-        path: "login",
-        element: <LoginPage />,
-    },
-    {
-        path: "register",
-        element: <CreateAccountPage />,
-    },
-]);
+// Import the generated route tree
+import { routeTree } from "./routeTree.gen";
+
+const queryClient = new QueryClient();
+
+// Create a new router instance
+const router = createRouter({ routeTree, context: { queryClient } });
+
+// Register the router instance for type safety
+declare module "@tanstack/react-router" {
+    interface Register {
+        router: typeof router;
+    }
+}
 
 createRoot(document.getElementById("root")!).render(
-    <DataProvider>
-        <RouterProvider router={router} />
-    </DataProvider>
+    <StrictMode>
+        <QueryClientProvider client={queryClient}>
+            <RouterProvider router={router} />
+        </QueryClientProvider>
+    </StrictMode>
 );

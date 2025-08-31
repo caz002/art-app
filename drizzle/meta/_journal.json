@@ -1,0 +1,48 @@
+{
+  "version": "7",
+  "dialect": "postgresql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1756414249278,
+      "tag": "0000_watery_jocasta",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1756492165982,
+      "tag": "0001_easy_wonder_man",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1756492596846,
+      "tag": "0002_shocking_gateway",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1756496717652,
+      "tag": "0003_deep_scrambler",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1756504518941,
+      "tag": "0004_strange_hannibal_king",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1756515396002,
+      "tag": "0005_eminent_the_initiative",
+      "breakpoints": true
+    }
+  ]
+}
