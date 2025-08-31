@@ -41,7 +41,7 @@ export const getPostsQueryOptions = queryOptions({
 });
 
 async function getPostsByUserId(userId: string) {
-    const res = await api.profile[`:user_id`].$get({
+    const res = await api.profiles[`:user_id`].$get({
         param: { user_id: userId },
     });
 

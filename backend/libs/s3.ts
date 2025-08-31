@@ -1,7 +1,6 @@
 import { v4 as uuidv4 } from "uuid";
 import {
     S3Client,
-    GetObjectCommand,
     PutObjectCommand,
     DeleteObjectCommand,
 } from "@aws-sdk/client-s3";

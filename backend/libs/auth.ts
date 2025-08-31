@@ -1,8 +1,9 @@
-import { betterAuth } from "better-auth";
+import { betterAuth, type Session, type User } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { db } from "../db"; // your drizzle instance
 import { user, session, account, verification } from "../db/schema/auth-schema";
 import { createMiddleware } from "hono/factory";
+import { HTTPException } from "hono/http-exception";
 
 export const auth = betterAuth({
     trustedOrigins: ["http://localhost:5173", "http://127.0.0.1:5173"],
@@ -22,26 +23,22 @@ export const auth = betterAuth({
 
 type Env = {
     Variables: {
-        userId: string;
-        username: string;
+        user: User;
+        session: Session;
     };
 };
 
-export const getUser = createMiddleware<Env>(async (c, next) => {
-    try {
-        const session = await auth.api.getSession({
-            headers: c.req.raw.headers,
-        });
+export const requireAuth = createMiddleware<Env>(async (c, next) => {
+    const session = await auth.api.getSession({
+        headers: c.req.raw.headers,
+    });
 
-        if (!session) {
-            return c.json({ error: "Unauthorized" }, 401);
-        }
-
-        c.set("userId", session.user.id);
-        c.set("username", session.user.name);
-
-        await next();
-    } catch (e) {
-        return c.json({ error: "Unauthorized" }, 401);
+    if (!session) {
+        throw new HTTPException(401, { message: "Unauthorized" });
     }
+
+    c.set("user", session.user);
+    c.set("session", session.session);
+
+    await next();
 });

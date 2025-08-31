@@ -17,9 +17,9 @@ const Login = () => {
 };
 
 const Component = () => {
-    const { userId } = Route.useRouteContext();
+    const { auth } = Route.useRouteContext();
 
-    if (!userId) {
+    if (!auth) {
         return <Login />;
     }
 
@@ -28,15 +28,18 @@ const Component = () => {
 
 export const Route = createFileRoute("/_authenticated")({
     beforeLoad: async ({ context }) => {
-        // check if user is logged in
         const queryClient = context.queryClient;
 
         try {
-            const data = await queryClient.fetchQuery(userQueryOptions);
+            const info = await queryClient.fetchQuery(userQueryOptions);
 
-            return data;
+            return { auth: info };
         } catch (e) {
-            return { userId: null };
+            if (e instanceof Error) {
+                console.log(e.message);
+            }
+
+            return { auth: null };
         }
     },
     component: Component,

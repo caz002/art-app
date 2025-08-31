@@ -1,14 +1,7 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import {
-    Card,
-    CardContent,
-    CardDescription,
-    CardFooter,
-    CardHeader,
-    CardTitle,
-} from "@/components/ui/card";
+import { createFileRoute } from "@tanstack/react-router";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 
-import { getPostsByProfileQueryOptions, userQueryOptions } from "@/lib/api";
+import { getPostsByProfileQueryOptions } from "@/lib/api";
 import { useQuery } from "@tanstack/react-query";
 import { Gallery } from "@/components/gallery";
 
@@ -23,9 +16,9 @@ function Profile() {
         getPostsByProfileQueryOptions(userId)
     );
 
-    const { data: currentUser } = useQuery(userQueryOptions);
+    // const { data: userInfo } = useQuery(userQueryOptions);
 
-    const isOwner = currentUser?.userId === userId;
+    // const isOwner = userInfo?.user.id === userId;
 
     if (isError) {
         return <div>Error!</div>;
