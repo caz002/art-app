@@ -70,3 +70,20 @@ export async function deletePost({ id }: { id: number }) {
         throw new Error("Server error");
     }
 }
+
+async function getPrompt() {
+    const res = await api["daily-prompt"].$get();
+
+    if (!res.ok) {
+        throw new Error("Server error");
+    }
+
+    const prompt = await res.json();
+    return prompt.response;
+}
+
+export const getPromptQueryOptions = queryOptions({
+    queryKey: ["prompt"],
+    queryFn: getPrompt,
+    staleTime: Infinity,
+});

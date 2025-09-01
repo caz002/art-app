@@ -5,6 +5,7 @@ import { postsRoute } from "./routes/posts";
 import { authRoute } from "./routes/auth";
 import { profileRoute } from "./routes/profiles";
 import { HTTPException } from "hono/http-exception";
+import { PromptRoute } from "./routes/prompts";
 
 const app = new Hono();
 
@@ -14,6 +15,7 @@ const apiRoutes = app
     .basePath("/api")
     .route("/posts", postsRoute)
     .route("/profiles", profileRoute)
+    .route("/daily-prompt", PromptRoute)
     .route("/auth", authRoute);
 
 app.all("/api/*", (c) => {
