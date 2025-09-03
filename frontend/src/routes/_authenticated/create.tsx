@@ -1,5 +1,6 @@
 import { CanvasUploadForm } from "@/components/forms/CanvasUploadForm";
 import { FileUploadForm } from "@/components/forms/FileUploadForm";
+import { PromptCard } from "@/components/prompt";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { api, getPostsQueryOptions } from "@/lib/api";
 import { useQueryClient } from "@tanstack/react-query";
@@ -31,6 +32,7 @@ function CreatePost() {
     }
     return (
         <div className="max-w-4xl m-auto">
+            <PromptCard />
             <Tabs defaultValue="file">
                 <TabsList>
                     <TabsTrigger value="file">File Upload</TabsTrigger>
