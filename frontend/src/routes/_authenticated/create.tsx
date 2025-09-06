@@ -1,6 +1,7 @@
 import { CanvasUploadForm } from "@/components/forms/CanvasUploadForm";
 import { FileUploadForm } from "@/components/forms/FileUploadForm";
-import { PromptCard } from "@/components/prompt";
+import { PromptCard } from "@/components/prompts/prompt";
+import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { api, getPostsQueryOptions } from "@/lib/api";
 import { useQueryClient } from "@tanstack/react-query";
@@ -31,18 +32,30 @@ function CreatePost() {
         navigate({ to: "/" });
     }
     return (
-        <div className="max-w-4xl m-auto">
+        <div className="max-w-4xl m-auto grid gap-4">
             <PromptCard />
             <Tabs defaultValue="file">
-                <TabsList>
-                    <TabsTrigger value="file">File Upload</TabsTrigger>
-                    <TabsTrigger value="canvas">Canvas Upload</TabsTrigger>
+                <TabsList className="w-full flex">
+                    <TabsTrigger value="file" className="flex-1">
+                        File Upload
+                    </TabsTrigger>
+                    <TabsTrigger value="canvas" className="flex-1">
+                        Canvas Upload
+                    </TabsTrigger>
                 </TabsList>
                 <TabsContent value="file">
-                    <FileUploadForm onSubmit={handleSubmit} />
+                    <Card>
+                        <CardContent>
+                            <FileUploadForm onSubmit={handleSubmit} />
+                        </CardContent>
+                    </Card>
                 </TabsContent>
                 <TabsContent value="canvas">
-                    <CanvasUploadForm onSubmit={handleSubmit} />
+                    <Card>
+                        <CardContent>
+                            <CanvasUploadForm onSubmit={handleSubmit} />
+                        </CardContent>
+                    </Card>
                 </TabsContent>
             </Tabs>
         </div>

@@ -6,7 +6,7 @@ import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { FieldInfo } from "./FieldInfo";
 import { createPostSchema } from "@shared/types";
-import { Card, CardContent, CardFooter } from "../ui/card";
+import { Slider } from "../ui/slider";
 
 export function CanvasUploadForm({
     onSubmit,
@@ -15,7 +15,7 @@ export function CanvasUploadForm({
 }) {
     // background color needs implementation but low priority
     // const [canvasColor, setCanvasColor] = useState<string>("#FFFFFF");
-    const [strokeWidth, setStrokeWidth] = useState(5);
+    const [strokeWidth, setStrokeWidth] = useState(15);
     const [strokeColor, setStrokeColor] = useState("#000000");
     const canvasRef = useRef<HTMLCanvasElement | null>(null);
     const contextRef = useRef<CanvasRenderingContext2D | null>(null);
@@ -198,45 +198,48 @@ export function CanvasUploadForm({
                 handleSubmit();
             }}
         >
-            <form.Field name="caption">
-                {(field) => (
-                    <>
-                        <Label htmlFor={field.name}>Caption</Label>
-                        <Input
-                            id={field.name}
-                            type="text"
-                            placeholder="Caption"
-                            value={field.state.value}
-                            onChange={(e) => field.handleChange(e.target.value)}
-                        />
-                        <FieldInfo field={field} />
-                    </>
-                )}
-            </form.Field>
+            <div className="grid grid-cols-1 gap-4">
+                <form.Field name="caption">
+                    {(field) => (
+                        <>
+                            <Label htmlFor={field.name}>Caption</Label>
+                            <Input
+                                id={field.name}
+                                type="text"
+                                placeholder="Caption"
+                                value={field.state.value}
+                                onChange={(e) =>
+                                    field.handleChange(e.target.value)
+                                }
+                            />
+                            <FieldInfo field={field} />
+                        </>
+                    )}
+                </form.Field>
 
-            <form.Field name="picture">
-                {(field) => (
-                    <>
-                        <Card>
-                            <CardContent>
-                                {/* <Label htmlFor={field.name}></Label> */}
-                                <canvas
-                                    id={field.name}
-                                    ref={canvasRef}
-                                    height={800}
-                                    width={800}
-                                    className="w-full touch-none"
-                                    onTouchStart={handleStart}
-                                    onTouchMove={handleMove}
-                                    onTouchEnd={handleEnd}
-                                    onMouseDown={handleStart}
-                                    onMouseMove={handleMove}
-                                    onMouseUp={handleEnd}
-                                    onMouseOut={handleEnd}
-                                ></canvas>
-                            </CardContent>
-                            <CardFooter>
-                                <div className="flex flex-wrap items-center gap-6">
+                <form.Field name="picture">
+                    {(field) => (
+                        <>
+                            <div>
+                                <div className="border-2">
+                                    {/* <Label htmlFor={field.name}></Label> */}
+                                    <canvas
+                                        id={field.name}
+                                        ref={canvasRef}
+                                        height={800}
+                                        width={800}
+                                        className="w-full touch-none"
+                                        onTouchStart={handleStart}
+                                        onTouchMove={handleMove}
+                                        onTouchEnd={handleEnd}
+                                        onMouseDown={handleStart}
+                                        onMouseMove={handleMove}
+                                        onMouseUp={handleEnd}
+                                        onMouseOut={handleEnd}
+                                    ></canvas>
+                                </div>
+
+                                <div className="flex flex-wrap items-center gap-6 justify-center">
                                     <div className="flex gap-2">
                                         <Button
                                             type="button"
@@ -277,7 +280,7 @@ export function CanvasUploadForm({
                                         >
                                             Stroke Width: {strokeWidth}
                                         </label>
-                                        <input
+                                        {/* <input
                                             type="range"
                                             id="strokeWidth"
                                             min="1"
@@ -287,6 +290,16 @@ export function CanvasUploadForm({
                                                 setStrokeWidth(
                                                     Number(e.target.value)
                                                 )
+                                            }
+                                            className="w-sm"
+                                        /> */}
+                                        <Slider
+                                            id="strokeWidth"
+                                            min={1}
+                                            max={50}
+                                            defaultValue={[strokeWidth]}
+                                            onValueChange={(val) =>
+                                                setStrokeWidth(val[0])
                                             }
                                             className="w-sm"
                                         />
@@ -310,13 +323,13 @@ export function CanvasUploadForm({
                                         )}
                                     </form.Subscribe>
                                 </div>
-                            </CardFooter>
-                        </Card>
+                            </div>
 
-                        {/* <FieldInfo field={field} /> */}
-                    </>
-                )}
-            </form.Field>
+                            {/* <FieldInfo field={field} /> */}
+                        </>
+                    )}
+                </form.Field>
+            </div>
         </form>
     );
 }
