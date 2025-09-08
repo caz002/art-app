@@ -8,6 +8,9 @@ import {
 import { useQuery } from "@tanstack/react-query";
 import { ProfileGallery } from "@/components/gallery/ProfileGallery";
 import { ProfileSkeleton } from "@/components/skeletons/ProfileSkeleton";
+import { IoSettingsSharp } from "react-icons/io5";
+import { useState } from "react";
+import EditPopup from "@/components/ui/profile/editPopup";
 
 export const Route = createFileRoute("/profile/$userId")({
   component: Profile,
@@ -15,6 +18,7 @@ export const Route = createFileRoute("/profile/$userId")({
 
 function Profile() {
   const { userId } = Route.useParams();
+  const [showEditPopup, setShowEditPopup] = useState(false);
 
   // get all information related to user
   const { data, isPending, isError } = useQuery(
@@ -36,6 +40,7 @@ function Profile() {
   return (
     <div className="max-w-4xl m-auto flex flex-col gap-2">
       <div className="max-w-4xl grid sm:grid-cols-[2fr_1fr] gap-y-4 gap-x-2">
+        {showEditPopup && <EditPopup setShowEditPopup={setShowEditPopup} />}
         <Card>
           <CardHeader>
             <div className="flex gap-x-4 ">
@@ -54,6 +59,10 @@ function Profile() {
                   some placeholder text abt me! hello!
                 </p>
               </div>
+              <IoSettingsSharp
+                className="text-4xl"
+                onClick={() => setShowEditPopup(true)}
+              />
             </div>
           </CardHeader>
         </Card>
