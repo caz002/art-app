@@ -38,11 +38,14 @@ export function LoginForm({
                     password: value.password, // user password -> min 8 characters by default
                 },
                 {
-                    onRequest: (ctx) => {
+                    onRequest: () => {
                         //show loading
                     },
-                    onSuccess: (ctx) => {
+                    onSuccess: () => {
                         //redirect to the dashboard or sign in page
+                        queryClient.invalidateQueries({
+                            queryKey: getSessionQueryOptions.queryKey,
+                        });
                     },
                     onError: (ctx) => {
                         // display the error message
@@ -54,8 +57,6 @@ export function LoginForm({
             if (error) {
                 throw new Error(error.message);
             }
-
-            queryClient.fetchQuery(getSessionQueryOptions);
 
             navigate({
                 to: "/profile/$userId",

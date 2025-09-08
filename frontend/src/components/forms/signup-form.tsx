@@ -41,13 +41,14 @@ export function SignUpForm({
                     password: value.password, // user password -> min 8 characters by default
                 },
                 {
-                    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-                    onRequest: (_ctx) => {
+                    onRequest: () => {
                         //show loading
                     },
-                    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-                    onSuccess: (_ctx) => {
+                    onSuccess: () => {
                         //redirect to the dashboard or sign in page
+                        queryClient.invalidateQueries({
+                            queryKey: getSessionQueryOptions.queryKey,
+                        });
                     },
                     onError: (ctx) => {
                         // display the error message
@@ -61,8 +62,6 @@ export function SignUpForm({
             }
 
             // console.log(data.user.name);
-
-            queryClient.fetchQuery(getSessionQueryOptions);
 
             navigate({
                 to: "/profile/$userId",

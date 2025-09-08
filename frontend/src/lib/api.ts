@@ -57,8 +57,8 @@ export const getPostsByProfileQueryOptions = (userId: string) => {
     return queryOptions({
         queryKey: ["profile", userId],
         queryFn: () => getPostsByUserId(userId!),
-        staleTime: 1000 * 60 * 5,
-        retry: false,
+        // staleTime: 1000 * 60 * 5,
+        // retry: false,
     });
 };
 
@@ -103,5 +103,5 @@ async function getSession() {
 export const getSessionQueryOptions = queryOptions({
     queryKey: ["session"],
     queryFn: getSession,
-    // staleTime: 1000 * 60 * 60 * 24,
+    staleTime: 1000 * 60 * 60 * 24,
 });

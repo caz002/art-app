@@ -5,19 +5,22 @@ import {
     NavigationMenuItem,
     NavigationMenuList,
 } from "@/components/ui/navigation-menu";
-import { useQueryClient } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Link, useNavigate } from "@tanstack/react-router";
 import { NavProfile } from "./NavProfile";
 
 export function NavBar() {
     const navigate = useNavigate();
     const queryClient = useQueryClient();
-    const session = queryClient.getQueryData(getSessionQueryOptions.queryKey);
+    const { data: session } = useQuery(getSessionQueryOptions);
 
     async function signOut() {
         await authClient.signOut({
             fetchOptions: {
                 onSuccess: () => {
+                    queryClient.invalidateQueries({
+                        queryKey: getSessionQueryOptions.queryKey,
+                    });
                     navigate({ to: "/login" });
                 },
             },

@@ -5,7 +5,7 @@ import {
     getPostsByProfileQueryOptions,
     getSessionQueryOptions,
 } from "@/lib/api";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { ProfileGallery } from "@/components/gallery/ProfileGallery";
 
 export const Route = createFileRoute("/profile/$userId")({
@@ -14,7 +14,6 @@ export const Route = createFileRoute("/profile/$userId")({
 
 function Profile() {
     const { userId } = Route.useParams();
-    const queryClient = useQueryClient();
 
     // get all information related to user
     const { data, isPending, isError } = useQuery(
@@ -22,8 +21,8 @@ function Profile() {
     );
 
     // get session
-    const session = queryClient.getQueryData(getSessionQueryOptions.queryKey);
-    console.log(session);
+    const { data: session } = useQuery(getSessionQueryOptions);
+    // console.log(session);
 
     if (isError) {
         return <div>Error!</div>;
