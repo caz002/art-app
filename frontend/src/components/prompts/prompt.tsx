@@ -2,6 +2,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { getPromptQueryOptions } from "@/lib/api";
 import { useQuery } from "@tanstack/react-query";
 import { TextBlock } from "../ui/textblock";
+import { PromptSkeleton } from "../skeletons/PromptSkeleton";
 
 export function PromptCard() {
     // query client here
@@ -12,7 +13,7 @@ export function PromptCard() {
 
     // note to replace with skeletons/loading components later
     if (isPending) {
-        return "Loading...";
+        return <PromptSkeleton />;
     }
 
     if (isError) {

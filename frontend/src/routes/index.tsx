@@ -3,6 +3,7 @@ import { getPostsQueryOptions } from "../lib/api";
 import { useQuery } from "@tanstack/react-query";
 import { PromptCard } from "@/components/prompts/prompt";
 import { HomeGallery } from "@/components/gallery/HomeGallery";
+import { GallerySkeleton } from "@/components/skeletons/GallerySkeleton";
 
 export const Route = createFileRoute("/")({
     component: Index,
@@ -11,7 +12,7 @@ export const Route = createFileRoute("/")({
 function Index() {
     const { isPending, error, data } = useQuery(getPostsQueryOptions);
 
-    if (isPending) return "Loading";
+    if (isPending) return <GallerySkeleton />;
     if (error) return "An error has occured: " + error.message;
 
     return (

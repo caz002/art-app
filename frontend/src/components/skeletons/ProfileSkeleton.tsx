@@ -1,61 +1,23 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Card, CardContent, CardHeader } from "../ui/card";
+import { Skeleton } from "../ui/skeleton";
+import { GallerySkeleton } from "./GallerySkeleton";
 
-import {
-    getPostsByProfileQueryOptions,
-    getSessionQueryOptions,
-} from "@/lib/api";
-import { useQuery } from "@tanstack/react-query";
-import { ProfileGallery } from "@/components/gallery/ProfileGallery";
-import { ProfileSkeleton } from "@/components/skeletons/ProfileSkeleton";
-
-export const Route = createFileRoute("/profile/$userId")({
-    component: Profile,
-});
-
-function Profile() {
-    const { userId } = Route.useParams();
-
-    // get all information related to user
-    const { data, isPending, isError } = useQuery(
-        getPostsByProfileQueryOptions(userId)
-    );
-
-    // get session
-    const { data: session } = useQuery(getSessionQueryOptions);
-    // console.log(session);
-
-    if (isError) {
-        return <ProfileSkeleton />;
-    }
-
-    if (isPending) {
-        return <ProfileSkeleton />;
-    }
-
+export function ProfileSkeleton() {
     return (
         <div className="max-w-4xl m-auto flex flex-col gap-2">
             <div className="max-w-4xl grid sm:grid-cols-[2fr_1fr] gap-y-4 gap-x-2">
                 <Card>
                     <CardHeader>
                         <div className="flex gap-x-4 ">
-                            <img
-                                src={data.user.image}
-                                alt={data.user.name}
-                                className="w-32 h-32 object-cover rounded-md"
-                            />
+                            <Skeleton className="w-32 h-32 object-cover rounded-md" />
 
                             <div className="flex flex-col gap-y-1">
                                 <div>
                                     <h1 className="font-bold text-2xl">
-                                        {data.user.name}
+                                        <Skeleton className="h-8 w-30" />
                                     </h1>
                                 </div>
-                                <p>
-                                    hello! this is some placeholder text abt me!
-                                    hello! this is some placeholder text abt me!
-                                    hello!
-                                </p>
+                                <Skeleton className="w-80 h-full" />
                             </div>
                         </div>
                     </CardHeader>
@@ -65,60 +27,56 @@ function Profile() {
                         <dl className="contents">
                             <dt className="">Total Posts</dt>
                             <dd className="text-right font-medium">
-                                {data.posts.length}
+                                <Skeleton className="w-full h-6" />
                             </dd>
                         </dl>
                         <dl className="contents">
                             <dt className="">Best Streak</dt>
                             <dd className="text-right font-medium">
-                                NotImplemented
+                                <Skeleton className="w-full h-6" />
                             </dd>
                         </dl>
                         <dl className="contents">
                             <dt className="">Current Streak</dt>
                             <dd className="text-right font-medium">
-                                NotImplemented
+                                <Skeleton className="w-full h-6" />
                             </dd>
                         </dl>
                         <dl className="contents">
                             <dt className="">Perfect Week Count</dt>
                             <dd className="text-right font-medium">
-                                NotImplemented
+                                <Skeleton className="w-full h-6" />
                             </dd>
                         </dl>
                         <dl className="contents">
                             <dt className="">Completion Rate</dt>
                             <dd className="text-right font-medium">
-                                NotImplemented
+                                <Skeleton className="w-full h-6" />
                             </dd>
                         </dl>
                     </div>
                 </Card>
             </div>
+
             <Card>
                 <CardContent>
                     <div className="m-auto flex gap-x-2">
                         <p>
                             <b>Joined </b>
-                            {new Date(data.user.createdAt).toDateString()}
+                            <Skeleton className="h-6 w-50" />
                         </p>
                         <p>
                             <b>Likes </b>
-                            placeholder, placeholder
+                            <Skeleton className="h-6 w-50" />
                         </p>
                         <p>
                             <b>Occupation </b>
-                            placeholder, placeholder
+                            <Skeleton className="h-6 w-50" />
                         </p>
                     </div>
                 </CardContent>
             </Card>
-            <ProfileGallery
-                {...data}
-                session={
-                    session ? { user: { id: session.user.id } } : undefined
-                }
-            />
+            <GallerySkeleton />
         </div>
     );
 }
