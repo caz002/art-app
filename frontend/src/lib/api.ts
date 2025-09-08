@@ -1,6 +1,7 @@
 import { type ApiRoutes } from "@backend/app";
 import { queryOptions } from "@tanstack/react-query";
 import { hc } from "hono/client";
+import { authClient } from "./auth-client";
 
 export const client = hc<ApiRoutes>("/");
 
@@ -56,14 +57,14 @@ export const getPostsByProfileQueryOptions = (userId: string) => {
     return queryOptions({
         queryKey: ["profile", userId],
         queryFn: () => getPostsByUserId(userId!),
-        staleTime: 1000 * 60 * 5,
-        retry: false,
+        // staleTime: 1000 * 60 * 5,
+        // retry: false,
     });
 };
 
-export async function deletePost({ id }: { id: number }) {
+export async function deletePost({ postId }: { postId: number }) {
     const res = await api.posts[":id{[0-9]+}"].$delete({
-        param: { id: id.toString() },
+        param: { id: postId.toString() },
     });
 
     if (!res.ok) {
@@ -86,4 +87,21 @@ export const getPromptQueryOptions = queryOptions({
     queryKey: ["prompt"],
     queryFn: getPrompt,
     staleTime: Infinity,
+});
+
+async function getSession() {
+    const {
+        data: session,
+        // isPending, //loading state
+        // error, //error object
+        // refetch, //refetch the session
+    } = await authClient.getSession();
+
+    return session;
+}
+
+export const getSessionQueryOptions = queryOptions({
+    queryKey: ["session"],
+    queryFn: getSession,
+    staleTime: 1000 * 60 * 60 * 24,
 });

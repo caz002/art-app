@@ -1,8 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { getPostsQueryOptions } from "../lib/api";
 import { useQuery } from "@tanstack/react-query";
-import { Gallery } from "@/components/gallery";
-import { PromptCard } from "@/components/prompt";
+import { PromptCard } from "@/components/prompts/prompt";
+import { HomeGallery } from "@/components/gallery/HomeGallery";
+import { GallerySkeleton } from "@/components/skeletons/GallerySkeleton";
 
 export const Route = createFileRoute("/")({
     component: Index,
@@ -11,13 +12,13 @@ export const Route = createFileRoute("/")({
 function Index() {
     const { isPending, error, data } = useQuery(getPostsQueryOptions);
 
-    if (isPending) return "Loading";
+    if (isPending) return <GallerySkeleton />;
     if (error) return "An error has occured: " + error.message;
 
     return (
-        <div className="flex flex-col gap-y-10 max-w-4xl m-auto">
+        <div className="grid gap-4">
             <PromptCard />
-            <Gallery {...data} />
+            <HomeGallery {...data} />
         </div>
     );
 }

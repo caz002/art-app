@@ -6,6 +6,8 @@ import { Label } from "@/components/ui/label";
 import { authClient } from "@/lib/auth-client";
 import { useNavigate } from "@tanstack/react-router";
 import { AnyFieldApi, useForm } from "@tanstack/react-form";
+import { useQueryClient } from "@tanstack/react-query";
+import { getSessionQueryOptions } from "@/lib/api";
 
 function FieldInfo({ field }: { field: AnyFieldApi }) {
     return (
@@ -23,6 +25,7 @@ export function LoginForm({
     ...props
 }: React.ComponentProps<"div">) {
     const navigate = useNavigate();
+    const queryClient = useQueryClient();
     const form = useForm({
         defaultValues: {
             email: "",
@@ -35,11 +38,14 @@ export function LoginForm({
                     password: value.password, // user password -> min 8 characters by default
                 },
                 {
-                    onRequest: (ctx) => {
+                    onRequest: () => {
                         //show loading
                     },
-                    onSuccess: (ctx) => {
+                    onSuccess: () => {
                         //redirect to the dashboard or sign in page
+                        queryClient.invalidateQueries({
+                            queryKey: getSessionQueryOptions.queryKey,
+                        });
                     },
                     onError: (ctx) => {
                         // display the error message

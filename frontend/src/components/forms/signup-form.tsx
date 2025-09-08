@@ -3,9 +3,11 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { authClient, getErrorMessage } from "@/lib/auth-client";
+import { authClient } from "@/lib/auth-client";
 import { useNavigate } from "@tanstack/react-router";
 import { AnyFieldApi, useForm } from "@tanstack/react-form";
+import { useQueryClient } from "@tanstack/react-query";
+import { getSessionQueryOptions } from "@/lib/api";
 
 function FieldInfo({ field }: { field: AnyFieldApi }) {
     return (
@@ -23,6 +25,7 @@ export function SignUpForm({
     ...props
 }: React.ComponentProps<"div">) {
     const navigate = useNavigate();
+    const queryClient = useQueryClient();
     const form = useForm({
         defaultValues: {
             email: "",
@@ -38,11 +41,14 @@ export function SignUpForm({
                     password: value.password, // user password -> min 8 characters by default
                 },
                 {
-                    onRequest: (ctx) => {
+                    onRequest: () => {
                         //show loading
                     },
-                    onSuccess: (ctx) => {
+                    onSuccess: () => {
                         //redirect to the dashboard or sign in page
+                        queryClient.invalidateQueries({
+                            queryKey: getSessionQueryOptions.queryKey,
+                        });
                     },
                     onError: (ctx) => {
                         // display the error message
