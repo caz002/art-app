@@ -10,7 +10,7 @@ import { ProfileGallery } from "@/components/gallery/ProfileGallery";
 import { ProfileSkeleton } from "@/components/skeletons/ProfileSkeleton";
 import { IoSettingsSharp } from "react-icons/io5";
 import { useState } from "react";
-import EditPopup from "@/components/ui/profile/editPopup";
+import EditPopup from "@/components/profiles/editPopup";
 
 export const Route = createFileRoute("/profile/$userId")({
   component: Profile,
