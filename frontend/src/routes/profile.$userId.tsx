@@ -59,10 +59,12 @@ function Profile() {
                   some placeholder text abt me! hello!
                 </p>
               </div>
-              <IoSettingsSharp
-                className="text-4xl"
-                onClick={() => setShowEditPopup(true)}
-              />
+              {session?.user?.id == data.user.id && (
+                <IoSettingsSharp
+                  className="text-4xl"
+                  onClick={() => setShowEditPopup(true)}
+                />
+              )}
             </div>
           </CardHeader>
         </Card>
