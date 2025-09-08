@@ -26,19 +26,19 @@ export default function EditPopup({
       likes: "",
       occupation: "",
     },
-    onSubmit: async ({ value }) => {
-      // const res = await api.{}.$post({
-      //   form: {
-      //     bio: value.bio,
-      //     likes: value.likes,
-      //     occupation: value.occupation,
-      //   },
-      // });
+    // onSubmit: async ({ value }) => {
+    //   const res = await fetch(`/users/${userId}`, {
+    //     method: "PUT",
+    //     headers: { "Content-Type": "application/json" },
+    //     body: JSON.stringify(value),
+    //   });
 
-      if (!res.ok) {
-        throw new Error("server error");
-      }
-    },
+    //   if (res.ok) {
+    //     alert("Information Updated!");
+    //   } else {
+    //     alert("Error updating user information");
+    //   }
+    // },
   });
   return (
     <div className="fixed inset-0 flex items-center justify-center z-50">
