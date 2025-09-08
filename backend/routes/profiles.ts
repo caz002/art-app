@@ -5,78 +5,98 @@ import { posts as postsTable } from "../db/schema/posts";
 import { user as usersTable } from "../db/schema/auth-schema";
 import { desc, eq } from "drizzle-orm";
 import { HTTPException } from "hono/http-exception";
+import { requireAuth } from "../libs/auth";
 
 export const profileRoute = new Hono()
-    .get("/:user_id", async (c) => {
-        const userId = c.req.param("user_id");
-        if (!userId) {
-            throw new HTTPException(400, {
-                message: "UserId must be provided",
-            });
-        }
+  .get("/:user_id", async (c) => {
+    const userId = c.req.param("user_id");
+    if (!userId) {
+      throw new HTTPException(400, {
+        message: "UserId must be provided",
+      });
+    }
 
-        const user = await db
-            .select()
-            .from(usersTable)
-            .where(eq(usersTable.id, userId))
-            .limit(1)
-            .then((res) => res[0]);
+    const user = await db
+      .select()
+      .from(usersTable)
+      .where(eq(usersTable.id, userId))
+      .limit(1)
+      .then((res) => res[0]);
 
-        if (!user) {
-            throw new HTTPException(404, {
-                message: "No user found with that ID",
-            });
-        }
+    if (!user) {
+      throw new HTTPException(404, {
+        message: "No user found with that ID",
+      });
+    }
 
-        const posts = await db
-            .select()
-            .from(postsTable)
-            .where(eq(postsTable.userId, userId))
-            .orderBy(desc(postsTable.createdAt));
+    const posts = await db
+      .select()
+      .from(postsTable)
+      .where(eq(postsTable.userId, userId))
+      .orderBy(desc(postsTable.createdAt));
 
-        const postsWithUrls = posts.map((post) => ({
-            ...post,
-            imageUrl: process.env.CLOUDFRONT_URL! + post.imageKey,
-        }));
+    const postsWithUrls = posts.map((post) => ({
+      ...post,
+      imageUrl: process.env.CLOUDFRONT_URL! + post.imageKey,
+    }));
 
-        return c.json({
-            user: user,
-            posts: postsWithUrls,
-        });
-    })
-    .get("/:user_id/posts", async (c) => {
-        const userId = c.req.param("user_id");
-
-        if (!userId) {
-            throw new HTTPException(400, {
-                message: "UserId must be provided",
-            });
-        }
-
-        const user = await db
-            .select()
-            .from(usersTable)
-            .where(eq(usersTable.id, userId))
-            .then((res) => res[0]);
-
-        if (!user) {
-            throw new HTTPException(404, {
-                message: "No user found with that ID",
-            });
-        }
-
-        const posts = await db
-            .select()
-            .from(postsTable)
-            .where(eq(postsTable.userId, userId))
-            .orderBy(desc(postsTable.createdAt));
-
-        const postsWithUrls = posts.map((post) => ({
-            ...post,
-            imageUrl: process.env.CLOUDFRONT_URL! + post.imageKey,
-        }));
-
-        return c.json({
-            posts: postsWithUrls,
-        });
+    return c.json({
+      user: user,
+      posts: postsWithUrls,
     });
+  })
+  .put("/:user_id", requireAuth, async (c) => {
+    const userId = c.req.param("user_id");
+    const data = await c.req.json();
+    if (c.var.user.id !== userId)
+      throw new HTTPException(403, { message: "Forbidden" });
+
+    const { bio, likes, occupation } = data;
+    if (!bio || !likes || !occupation)
+      return c.json({ error: "Missing fields" }, 400);
+    try {
+      await db
+        .update(usersTable)
+        .set({ bio, likes, occupation })
+        .where(eq(usersTable.id, userId));
+      return c.json({ success: true });
+    } catch (err) {
+      console.error("Failed to edit profile information:", err);
+    }
+  })
+  .get("/:user_id/posts", async (c) => {
+    const userId = c.req.param("user_id");
+
+    if (!userId) {
+      throw new HTTPException(400, {
+        message: "UserId must be provided",
+      });
+    }
+
+    const user = await db
+      .select()
+      .from(usersTable)
+      .where(eq(usersTable.id, userId))
+      .then((res) => res[0]);
+
+    if (!user) {
+      throw new HTTPException(404, {
+        message: "No user found with that ID",
+      });
+    }
+
+    const posts = await db
+      .select()
+      .from(postsTable)
+      .where(eq(postsTable.userId, userId))
+      .orderBy(desc(postsTable.createdAt));
+
+    const postsWithUrls = posts.map((post) => ({
+      ...post,
+      imageUrl: process.env.CLOUDFRONT_URL! + post.imageKey,
+    }));
+
+    return c.json({
+      posts: postsWithUrls,
+    });
+  });
