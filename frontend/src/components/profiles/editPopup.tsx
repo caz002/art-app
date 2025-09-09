@@ -1,10 +1,33 @@
 import React from "react";
-import { api } from "@/lib/api";
 import { Label } from "@/components/ui/label";
 import { AnyFieldApi, useForm } from "@tanstack/react-form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { useMutation } from "@tanstack/react-query";
+import { RefetchOptions, QueryObserverResult } from "@tanstack/react-query";
 
+type UserProfileData = {
+  user: {
+    id: string;
+    name: string;
+    email: string;
+    emailVerified: boolean;
+    image: string;
+    createdAt: string;
+    updatedAt: string;
+    bio: string | null;
+    likes: string | null;
+    occupation: string | null;
+  };
+  posts: {
+    imageUrl: string;
+    id: number;
+    userId: string;
+    caption: string;
+    imageKey: string;
+    createdAt: string;
+  }[];
+};
 function FieldInfo({ field }: { field: AnyFieldApi }) {
   return (
     <>
@@ -17,28 +40,62 @@ function FieldInfo({ field }: { field: AnyFieldApi }) {
 }
 export default function EditPopup({
   setShowEditPopup,
+  userId,
+  userData,
+  refetch,
 }: {
   setShowEditPopup: React.Dispatch<React.SetStateAction<boolean>>;
+  userId: string;
+  userData: {
+    id: string;
+    name: string;
+    email: string;
+    emailVerified: boolean;
+    image: string;
+    createdAt: string;
+    updatedAt: string;
+    bio: string | null;
+    likes: string | null;
+    occupation: string | null;
+  };
+  refetch: (
+    options?: RefetchOptions
+  ) => Promise<QueryObserverResult<UserProfileData, Error>>;
 }) {
   const form = useForm({
     defaultValues: {
-      bio: "",
-      likes: "",
-      occupation: "",
+      bio: userData?.bio ?? "",
+      likes: userData?.likes ?? "",
+      occupation: userData?.occupation ?? "",
     },
-    // onSubmit: async ({ value }) => {
-    //   const res = await fetch(`/users/${userId}`, {
-    //     method: "PUT",
-    //     headers: { "Content-Type": "application/json" },
-    //     body: JSON.stringify(value),
-    //   });
+    onSubmit: async ({ formApi, value }) => {
+      // Do something with form data
+      await mutation.mutateAsync(value);
 
-    //   if (res.ok) {
-    //     alert("Information Updated!");
-    //   } else {
-    //     alert("Error updating user information");
-    //   }
-    // },
+      // Invalidating query to recheck fresh data
+      await refetch();
+      formApi.reset();
+    },
+  });
+  const mutation = useMutation({
+    mutationFn: async (value: {
+      bio: string;
+      likes: string;
+      occupation: string;
+    }) =>
+      fetch(`/api/profiles/${userId}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          id: userId,
+          bio: value.bio,
+          likes: value.likes,
+          occupation: value.occupation,
+        }),
+      }).then((res) => res.json()),
+    onSuccess: () => {
+      setShowEditPopup(false);
+    },
   });
   return (
     <div className="fixed inset-0 flex items-center justify-center z-50">
@@ -61,7 +118,6 @@ export default function EditPopup({
               e.preventDefault();
               e.stopPropagation();
               form.handleSubmit();
-              setShowEditPopup(false);
             }}
             className="flex flex-1 flex-col gap-6"
           >
@@ -79,7 +135,7 @@ export default function EditPopup({
                     onChange={(e) => {
                       field.handleChange(e.target.value);
                     }}
-                    defaultValue={field.name}
+                    defaultValue={field.state.value}
                     required
                   />
                   <FieldInfo field={field} />
@@ -100,7 +156,7 @@ export default function EditPopup({
                     onChange={(e) => {
                       field.handleChange(e.target.value);
                     }}
-                    defaultValue={field.name}
+                    defaultValue={field.state.value}
                     required
                   />
                   <FieldInfo field={field} />
@@ -121,7 +177,7 @@ export default function EditPopup({
                     onChange={(e) => {
                       field.handleChange(e.target.value);
                     }}
-                    defaultValue={field.name}
+                    defaultValue={field.state.value}
                     required
                   />
                   <FieldInfo field={field} />
