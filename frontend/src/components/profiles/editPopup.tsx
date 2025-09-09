@@ -6,29 +6,8 @@ import { Button } from "@/components/ui/button";
 import { useMutation } from "@tanstack/react-query";
 import { Card } from "../ui/card";
 import { RefetchOptions, QueryObserverResult } from "@tanstack/react-query";
+import { UserData, UserProfileData } from "@/lib/types";
 
-type UserProfileData = {
-  user: {
-    id: string;
-    name: string;
-    email: string;
-    emailVerified: boolean;
-    image: string;
-    createdAt: string;
-    updatedAt: string;
-    bio: string | null;
-    likes: string | null;
-    occupation: string | null;
-  };
-  posts: {
-    imageUrl: string;
-    id: number;
-    userId: string;
-    caption: string;
-    imageKey: string;
-    createdAt: string;
-  }[];
-};
 function FieldInfo({ field }: { field: AnyFieldApi }) {
   return (
     <>
@@ -47,18 +26,7 @@ export default function EditPopup({
 }: {
   setShowEditPopup: React.Dispatch<React.SetStateAction<boolean>>;
   userId: string;
-  userData: {
-    id: string;
-    name: string;
-    email: string;
-    emailVerified: boolean;
-    image: string;
-    createdAt: string;
-    updatedAt: string;
-    bio: string | null;
-    likes: string | null;
-    occupation: string | null;
-  };
+  userData: UserData;
   refetch: (
     options?: RefetchOptions
   ) => Promise<QueryObserverResult<UserProfileData, Error>>;
@@ -70,7 +38,7 @@ export default function EditPopup({
       occupation: userData?.occupation ?? "",
     },
     onSubmit: async ({ formApi, value }) => {
-      // Do something with form data
+      // Modify Form Data
       await mutation.mutateAsync(value);
 
       // Invalidating query to recheck fresh data
