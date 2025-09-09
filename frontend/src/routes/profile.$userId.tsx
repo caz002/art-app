@@ -49,7 +49,7 @@ function Profile() {
           />
         )}
         <Card>
-          <CardHeader>
+          <CardHeader className="relative">
             <div className="flex gap-x-4 ">
               <img
                 src={data.user.image}
@@ -65,7 +65,7 @@ function Profile() {
               </div>
               {session?.user?.id == data.user.id && (
                 <IoSettingsSharp
-                  className="text-4xl"
+                  className="text-4xl absolute right-4"
                   onClick={() => setShowEditPopup(true)}
                 />
               )}

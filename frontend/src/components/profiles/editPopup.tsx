@@ -4,6 +4,7 @@ import { AnyFieldApi, useForm } from "@tanstack/react-form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useMutation } from "@tanstack/react-query";
+import { Card } from "../ui/card";
 import { RefetchOptions, QueryObserverResult } from "@tanstack/react-query";
 
 type UserProfileData = {
@@ -102,7 +103,7 @@ export default function EditPopup({
       {/* Overlay */}
       <div className="absolute inset-0 bg-black opacity-50" />
       {/* Popup */}
-      <div className="bg-blue-800 rounded-xl shadow-lg p-6 relative z-10 w-11/12 max-w-md">
+      <Card className="shadow-lg p-6 relative z-10 w-11/12 max-w-md">
         <button
           className="absolute top-6 right-6 text-gray-500 hover:text-gray-800"
           onClick={() => setShowEditPopup(false)}
@@ -196,7 +197,7 @@ export default function EditPopup({
             </div>
           </form>
         </div>
-      </div>
+      </Card>
     </div>
   );
 }
