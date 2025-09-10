@@ -6,7 +6,7 @@ export type UserData = {
   image: string;
   createdAt: string;
   updatedAt: string;
-  bio: string | null;
-  likes: string | null;
-  occupation: string | null;
+  bio: string;
+  likes: string;
+  occupation: string;
 };

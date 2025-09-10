@@ -22,9 +22,15 @@ export const user = pgTable("user", {
   updatedAt: timestamp("updated_at")
     .$defaultFn(() => new Date())
     .notNull(),
-  bio: text("bio"),
-  likes: text("likes"),
-  occupation: text("occupation"),
+  bio: text("bio")
+    .$defaultFn(() => "placeholder")
+    .notNull(),
+  likes: text("likes")
+    .$defaultFn(() => "placeholder")
+    .notNull(),
+  occupation: text("occupation")
+    .$defaultFn(() => "placeholder")
+    .notNull(),
 });
 
 export const session = pgTable("session", {
