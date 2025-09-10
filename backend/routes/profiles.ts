@@ -6,6 +6,8 @@ import { user as usersTable } from "../db/schema/auth-schema";
 import { desc, eq } from "drizzle-orm";
 import { HTTPException } from "hono/http-exception";
 import { requireAuth } from "../libs/auth";
+import { zValidator } from "@hono/zod-validator";
+import { updateProfileSchema } from "../../shared/types";
 
 export const profileRoute = new Hono()
   .get("/:user_id", async (c) => {
@@ -45,25 +47,31 @@ export const profileRoute = new Hono()
       posts: postsWithUrls,
     });
   })
-  .put("/:user_id", requireAuth, async (c) => {
-    const userId = c.req.param("user_id");
-    const data = await c.req.json();
-    if (c.var.user.id !== userId)
-      throw new HTTPException(403, { message: "Forbidden" });
+  .put(
+    "/:user_id",
+    requireAuth,
+    zValidator("form", updateProfileSchema),
+    async (c) => {
+      const userId = c.req.param("user_id");
+      const data = c.req.valid("form");
 
-    const { bio, likes, occupation } = data;
-    if (!bio || !likes || !occupation)
-      return c.json({ error: "Missing fields" }, 400);
-    try {
-      await db
-        .update(usersTable)
-        .set({ bio, likes, occupation })
-        .where(eq(usersTable.id, userId));
-      return c.json({ success: true });
-    } catch (err) {
-      console.error("Failed to edit profile information:", err);
+      if (c.var.user.id !== userId)
+        throw new HTTPException(403, { message: "Forbidden" });
+
+      const { bio, likes, occupation } = data;
+      if (!bio || !likes || !occupation)
+        return c.json({ error: "Missing fields" }, 400);
+      try {
+        await db
+          .update(usersTable)
+          .set({ bio, likes, occupation })
+          .where(eq(usersTable.id, userId));
+        return c.json({ success: true });
+      } catch (err) {
+        console.error("Failed to edit profile information:", err);
+      }
     }
-  })
+  )
   .get("/:user_id/posts", async (c) => {
     const userId = c.req.param("user_id");
 

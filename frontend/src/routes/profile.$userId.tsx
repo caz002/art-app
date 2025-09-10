@@ -40,9 +40,15 @@ function Profile() {
   return (
     <div className="max-w-4xl m-auto flex flex-col gap-2">
       <div className="max-w-4xl grid sm:grid-cols-[2fr_1fr] gap-y-4 gap-x-2">
-        {showEditPopup && <EditPopup setShowEditPopup={setShowEditPopup} />}
+        {showEditPopup && (
+          <EditPopup
+            setShowEditPopup={setShowEditPopup}
+            userId={userId}
+            userData={data?.user}
+          />
+        )}
         <Card>
-          <CardHeader>
+          <CardHeader className="relative">
             <div className="flex gap-x-4 ">
               <img
                 src={data.user.image}
@@ -54,14 +60,11 @@ function Profile() {
                 <div>
                   <h1 className="font-bold text-2xl">{data.user.name}</h1>
                 </div>
-                <p>
-                  hello! this is some placeholder text abt me! hello! this is
-                  some placeholder text abt me! hello!
-                </p>
+                <p>{data.user.bio}</p>
               </div>
               {session?.user?.id == data.user.id && (
                 <IoSettingsSharp
-                  className="text-4xl"
+                  className="text-4xl absolute right-4"
                   onClick={() => setShowEditPopup(true)}
                 />
               )}
@@ -102,11 +105,11 @@ function Profile() {
             </p>
             <p>
               <b>Likes </b>
-              placeholder, placeholder
+              {data.user.likes}
             </p>
             <p>
               <b>Occupation </b>
-              placeholder, placeholder
+              {data.user.occupation}
             </p>
           </div>
         </CardContent>

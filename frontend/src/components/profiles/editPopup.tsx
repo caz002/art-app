@@ -1,9 +1,12 @@
 import React from "react";
-import { api } from "@/lib/api";
 import { Label } from "@/components/ui/label";
 import { AnyFieldApi, useForm } from "@tanstack/react-form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { Card } from "../ui/card";
+import { UserData } from "@/lib/types";
+import { api, getPostsByProfileQueryOptions } from "@/lib/api";
 
 function FieldInfo({ field }: { field: AnyFieldApi }) {
   return (
@@ -17,35 +20,70 @@ function FieldInfo({ field }: { field: AnyFieldApi }) {
 }
 export default function EditPopup({
   setShowEditPopup,
+  userId,
+  userData,
 }: {
   setShowEditPopup: React.Dispatch<React.SetStateAction<boolean>>;
+  userId: string;
+  userData: UserData;
 }) {
+  const queryClient = useQueryClient();
   const form = useForm({
     defaultValues: {
-      bio: "",
-      likes: "",
-      occupation: "",
+      bio: userData?.bio ?? "",
+      likes: userData?.likes ?? "",
+      occupation: userData?.occupation ?? "",
     },
-    // onSubmit: async ({ value }) => {
-    //   const res = await fetch(`/users/${userId}`, {
-    //     method: "PUT",
-    //     headers: { "Content-Type": "application/json" },
-    //     body: JSON.stringify(value),
-    //   });
+    onSubmit: async ({ formApi, value }) => {
+      // Modify Form Data
+      await mutation.mutateAsync(value);
+      formApi.reset();
+    },
+  });
+  const mutation = useMutation({
+    mutationFn: async (value: {
+      bio: string;
+      likes: string;
+      occupation: string;
+    }) => {
+      const res = await api.profiles[":user_id"].$put({
+        param: {
+          user_id: userId,
+        },
+        form: {
+          bio: value.bio,
+          likes: value.likes,
+          occupation: value.occupation,
+        },
+      });
 
-    //   if (res.ok) {
-    //     alert("Information Updated!");
-    //   } else {
-    //     alert("Error updating user information");
-    //   }
-    // },
+      if (!res.ok) {
+        throw new Error("Failed to edit profile");
+      }
+
+      const existingProfile = await queryClient.ensureQueryData(
+        getPostsByProfileQueryOptions(userId)
+      );
+      queryClient.setQueryData(getPostsByProfileQueryOptions(userId).queryKey, {
+        ...existingProfile,
+        user: {
+          ...existingProfile.user,
+          bio: value.bio,
+          likes: value.likes,
+          occupation: value.occupation,
+        },
+      });
+    },
+    onSuccess: () => {
+      setShowEditPopup(false);
+    },
   });
   return (
     <div className="fixed inset-0 flex items-center justify-center z-50">
       {/* Overlay */}
       <div className="absolute inset-0 bg-black opacity-50" />
       {/* Popup */}
-      <div className="bg-blue-800 rounded-xl shadow-lg p-6 relative z-10 w-11/12 max-w-md">
+      <Card className="shadow-lg p-6 relative z-10 w-11/12 max-w-md">
         <button
           className="absolute top-6 right-6 text-gray-500 hover:text-gray-800"
           onClick={() => setShowEditPopup(false)}
@@ -61,7 +99,6 @@ export default function EditPopup({
               e.preventDefault();
               e.stopPropagation();
               form.handleSubmit();
-              setShowEditPopup(false);
             }}
             className="flex flex-1 flex-col gap-6"
           >
@@ -79,7 +116,7 @@ export default function EditPopup({
                     onChange={(e) => {
                       field.handleChange(e.target.value);
                     }}
-                    defaultValue={field.name}
+                    defaultValue={field.state.value}
                     required
                   />
                   <FieldInfo field={field} />
@@ -100,7 +137,7 @@ export default function EditPopup({
                     onChange={(e) => {
                       field.handleChange(e.target.value);
                     }}
-                    defaultValue={field.name}
+                    defaultValue={field.state.value}
                     required
                   />
                   <FieldInfo field={field} />
@@ -121,7 +158,7 @@ export default function EditPopup({
                     onChange={(e) => {
                       field.handleChange(e.target.value);
                     }}
-                    defaultValue={field.name}
+                    defaultValue={field.state.value}
                     required
                   />
                   <FieldInfo field={field} />
@@ -140,7 +177,7 @@ export default function EditPopup({
             </div>
           </form>
         </div>
-      </div>
+      </Card>
     </div>
   );
 }
