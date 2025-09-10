@@ -21,7 +21,7 @@ function Profile() {
   const [showEditPopup, setShowEditPopup] = useState(false);
 
   // get all information related to user
-  const { data, isPending, isError, refetch } = useQuery(
+  const { data, isPending, isError } = useQuery(
     getPostsByProfileQueryOptions(userId)
   );
 
