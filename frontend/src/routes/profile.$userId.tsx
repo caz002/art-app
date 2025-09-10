@@ -45,7 +45,6 @@ function Profile() {
             setShowEditPopup={setShowEditPopup}
             userId={userId}
             userData={data?.user}
-            refetch={refetch}
           />
         )}
         <Card>

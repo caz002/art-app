@@ -3,10 +3,10 @@ import { Label } from "@/components/ui/label";
 import { AnyFieldApi, useForm } from "@tanstack/react-form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card } from "../ui/card";
-import { RefetchOptions, QueryObserverResult } from "@tanstack/react-query";
-import { UserData, UserProfileData } from "@/lib/types";
+import { UserData } from "@/lib/types";
+import { api, getPostsByProfileQueryOptions } from "@/lib/api";
 
 function FieldInfo({ field }: { field: AnyFieldApi }) {
   return (
@@ -22,15 +22,12 @@ export default function EditPopup({
   setShowEditPopup,
   userId,
   userData,
-  refetch,
 }: {
   setShowEditPopup: React.Dispatch<React.SetStateAction<boolean>>;
   userId: string;
   userData: UserData;
-  refetch: (
-    options?: RefetchOptions
-  ) => Promise<QueryObserverResult<UserProfileData, Error>>;
 }) {
+  const queryClient = useQueryClient();
   const form = useForm({
     defaultValues: {
       bio: userData?.bio ?? "",
@@ -40,9 +37,6 @@ export default function EditPopup({
     onSubmit: async ({ formApi, value }) => {
       // Modify Form Data
       await mutation.mutateAsync(value);
-
-      // Invalidating query to recheck fresh data
-      await refetch();
       formApi.reset();
     },
   });
@@ -51,17 +45,35 @@ export default function EditPopup({
       bio: string;
       likes: string;
       occupation: string;
-    }) =>
-      fetch(`/api/profiles/${userId}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          id: userId,
+    }) => {
+      const res = await api.profiles[":user_id"].$put({
+        param: {
+          user_id: userId,
+        },
+        form: {
           bio: value.bio,
           likes: value.likes,
           occupation: value.occupation,
-        }),
-      }).then((res) => res.json()),
+        },
+      });
+
+      if (!res.ok) {
+        throw new Error("Failed to edit profile");
+      }
+
+      const existingProfile = await queryClient.ensureQueryData(
+        getPostsByProfileQueryOptions(userId)
+      );
+      queryClient.setQueryData(getPostsByProfileQueryOptions(userId).queryKey, {
+        ...existingProfile,
+        user: {
+          ...existingProfile.user,
+          bio: value.bio,
+          likes: value.likes,
+          occupation: value.occupation,
+        },
+      });
+    },
     onSuccess: () => {
       setShowEditPopup(false);
     },
