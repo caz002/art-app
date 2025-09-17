@@ -20,6 +20,7 @@ interface GalleryProps {
 //     queryFn: getPosts,
 //     staleTime: 1000 * 60 * 5,
 // });
+const PAGE_SIZE = 3;
 
 export function HomeGallery({ posts }: GalleryProps) {
   const {
@@ -32,11 +33,26 @@ export function HomeGallery({ posts }: GalleryProps) {
     hasNextPage,
   } = useInfiniteQuery({
     queryKey: ["projects"],
-    queryFn: getPosts,
-    getNextPageParam: (lastGroup) => lastGroup.posts[0].id,
+    queryFn: async ({ pageParam }) => {
+      const allItems = await getPosts();
+      console.log("allItems", allItems);
+      const allPosts = allItems.posts;
+      const start = pageParam * PAGE_SIZE;
+      const end = start + PAGE_SIZE;
+
+      return {
+        items: allPosts.slice(start, end),
+        nextPage: pageParam + 1,
+        hasMore: end < allPosts.length,
+      };
+    },
+    getNextPageParam: (lastGroup) => {
+      return lastGroup.hasMore ? lastGroup.nextPage : undefined;
+    },
     initialPageParam: 0,
   });
-  const allRows = data ? data.pages.flatMap((d) => d.posts) : [];
+  const allRows = data ? data.pages.flatMap((d) => d.items) : [];
+  console.log(data);
 
   const parentRef = React.useRef<HTMLDivElement>(null);
 
