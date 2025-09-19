@@ -18,7 +18,7 @@ function parseIntQuery(value: string | undefined, defaultValue: number) {
 
 export const postsRoute = new Hono()
   .get("/", async (c) => {
-    const defaultLimit = 9;
+    const defaultLimit = 200;
     const defaultOffset = 0;
 
     const { limit, offset, sortBy, order } = c.req.query();
@@ -29,8 +29,8 @@ export const postsRoute = new Hono()
     const posts = await db
       .select()
       .from(postsTable)
-      // .limit(validLimit)
-      // .offset(validOffset)
+      .limit(validLimit)
+      .offset(validOffset)
       .leftJoin(userTable, eq(postsTable.userId, userTable.id))
       .orderBy(desc(postsTable.createdAt));
 

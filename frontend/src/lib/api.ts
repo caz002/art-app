@@ -8,100 +8,105 @@ export const client = hc<ApiRoutes>("/");
 export const api = client.api;
 
 async function getCurrentUser() {
-    const res = await api.auth.me.$get();
+  const res = await api.auth.me.$get();
 
-    if (!res.ok) {
-        throw new Error("Server error");
-    }
+  if (!res.ok) {
+    throw new Error("Server error");
+  }
 
-    const data = await res.json();
-    return data;
+  const data = await res.json();
+  return data;
 }
 
 export const userQueryOptions = queryOptions({
-    queryKey: ["get-current-user"],
-    queryFn: getCurrentUser,
-    staleTime: Infinity,
+  queryKey: ["get-current-user"],
+  queryFn: getCurrentUser,
+  staleTime: Infinity,
 });
 
-export async function getPosts() {
-    const res = await api.posts.$get();
+export async function getPosts({ limit = 100, offset = 0 } = {}) {
+  const res = await api.posts.$get({
+    query: {
+      limit,
+      offset,
+    },
+  });
 
-    if (!res.ok) {
-        throw new Error("Server error");
-    }
+  if (!res.ok) {
+    throw new Error("Server error");
+  }
 
-    const data = await res.json();
-    return data;
+  const data = await res.json();
+  return data;
 }
 
 export const getPostsQueryOptions = queryOptions({
-    queryKey: ["get-posts"],
-    queryFn: getPosts,
-    staleTime: 1000 * 60 * 5,
+  queryKey: ["get-posts"],
+  queryFn: getPosts,
+  staleTime: 1000 * 60 * 5,
 });
 
 async function getPostsByUserId(userId: string) {
-    const res = await api.profiles[`:user_id`].$get({
-        param: { user_id: userId },
-    });
+  const res = await api.profiles[`:user_id`].$get({
+    param: { user_id: userId },
+  });
 
-    if (!res.ok) {
-        throw new Error("server error");
-    }
-    const data = await res.json();
-    return data;
+  if (!res.ok) {
+    throw new Error("server error");
+  }
+  const data = await res.json();
+  return data;
 }
 
 export const getPostsByProfileQueryOptions = (userId: string) => {
-    return queryOptions({
-        queryKey: ["profile", userId],
-        queryFn: () => getPostsByUserId(userId!),
-        // staleTime: 1000 * 60 * 5,
-        // retry: false,
-    });
+  return queryOptions({
+    queryKey: ["profile", userId],
+    queryFn: () => getPostsByUserId(userId!),
+    // staleTime: 1000 * 60 * 5,
+    // retry: false,
+  });
 };
 
 export async function deletePost({ postId }: { postId: number }) {
-    const res = await api.posts[":id{[0-9]+}"].$delete({
-        param: { id: postId.toString() },
-    });
+  const res = await api.posts[":id{[0-9]+}"].$delete({
+    param: { id: postId.toString() },
+  });
 
-    if (!res.ok) {
-        throw new Error("Server error");
-    }
+  if (!res.ok) {
+    throw new Error("Server error");
+  }
 }
 
 async function getPrompt() {
-    const res = await api["daily-prompt"].$get();
+  const res = await api["daily-prompt"].$get();
 
-    if (!res.ok) {
-        throw new Error("Server error");
-    }
+  if (!res.ok) {
+    throw new Error("Server error");
+  }
 
-    const prompt = await res.json();
-    return prompt.response;
+  const prompt = await res.json();
+  return prompt.response;
 }
 
 export const getPromptQueryOptions = queryOptions({
-    queryKey: ["prompt"],
-    queryFn: getPrompt,
-    staleTime: Infinity,
+  queryKey: ["prompt"],
+  queryFn: getPrompt,
+  staleTime: Infinity,
 });
 
 async function getSession() {
-    const {
-        data: session,
-        // isPending, //loading state
-        // error, //error object
-        // refetch, //refetch the session
-    } = await authClient.getSession();
+  const {
+    data: session,
+    // isPending, //loading state
+    // error, //error object
+    // refetch, //refetch the session
+  } = await authClient.getSession();
 
-    return session;
+  return session;
 }
 
 export const getSessionQueryOptions = queryOptions({
-    queryKey: ["session"],
-    queryFn: getSession,
-    staleTime: 1000 * 60 * 60 * 24,
+  queryKey: ["session"],
+  queryFn: getSession,
+  staleTime: 1000 * 60 * 60 * 24,
 });

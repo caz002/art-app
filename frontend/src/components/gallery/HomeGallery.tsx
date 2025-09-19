@@ -16,12 +16,6 @@ interface GalleryProps {
     createdAt: string;
   }[];
 }
-// export const getPostsQueryOptions = queryOptions({
-//     queryKey: ["get-posts"],
-//     queryFn: getPosts,
-//     staleTime: 1000 * 60 * 5,
-// });
-const PAGE_SIZE = 1;
 
 export function HomeGallery({ posts }: GalleryProps) {
   const {
@@ -35,18 +29,13 @@ export function HomeGallery({ posts }: GalleryProps) {
   } = useInfiniteQuery({
     queryKey: ["projects"],
     queryFn: async ({ pageParam }) => {
+      const currChunk = await getPosts({ limit: 3, offset: pageParam * 3 });
       const allItems = await getPosts();
-      const allPosts = allItems.posts;
-      const allChunks = [];
-      for (let i = 0; i < allPosts.length; i += 3) {
-        allChunks.push(allPosts.slice(i, i + 3));
-      }
-      const start = pageParam * PAGE_SIZE;
-      const end = start + PAGE_SIZE;
+      const end = pageParam * 3 + 3;
       return {
-        items: allChunks.slice(start, end),
+        items: [currChunk.posts],
         nextPage: pageParam + 1,
-        hasMore: end < allPosts.length,
+        hasMore: end < allItems.posts.length,
       };
     },
     getNextPageParam: (lastGroup) => {
@@ -54,7 +43,6 @@ export function HomeGallery({ posts }: GalleryProps) {
     },
     initialPageParam: 0,
   });
-  //console.log("data", data);
   const allRows = data ? data.pages.flatMap((d) => d.items) : [];
   console.log("allRows", allRows);
   console.log(allRows);
@@ -119,16 +107,24 @@ export function HomeGallery({ posts }: GalleryProps) {
                     height: `${virtualRow.size}px`,
                     transform: `translateY(${virtualRow.start}px)`,
                   }}
-                  className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4"
+                  className="flex flex-row flex-1 gap-4 pb-4"
                 >
                   {isLoaderRow ? (
                     hasNextPage ? (
-                      <LoadingSpinner />
+                      <div className="flex flex-row flex-1 items-center justify-center">
+                        <LoadingSpinner />
+                      </div>
                     ) : (
                       "Nothing more to load"
                     )
                   ) : (
-                    postRow.map((post) => <HomePost key={post.id} {...post} />)
+                    postRow.map((post) => (
+                      <HomePost
+                        key={post.id}
+                        {...post}
+                        className="max-w-[32%]"
+                      />
+                    ))
                   )}
                 </div>
               );
