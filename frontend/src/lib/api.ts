@@ -46,7 +46,7 @@ export const getPostsQueryOptions = queryOptions({
   staleTime: 1000 * 60 * 5,
 });
 
-async function getPostsByUserId(userId: string) {
+export async function getPostsByUserId(userId: string) {
   const res = await api.profiles[`:user_id`].$get({
     param: { user_id: userId },
   });

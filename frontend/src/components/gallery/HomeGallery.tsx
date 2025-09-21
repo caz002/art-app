@@ -44,9 +44,9 @@ export function HomeGallery({ posts }: GalleryProps) {
     initialPageParam: 0,
   });
   const allRows = data ? data.pages.flatMap((d) => d.items) : [];
-  console.log("allRows", allRows);
-  console.log(allRows);
-  console.log("hasNextPage", hasNextPage);
+  //console.log("allRows", allRows);
+  //console.log(allRows);
+  //console.log("hasNextPage", hasNextPage);
   const parentRef = React.useRef<HTMLDivElement>(null);
 
   const rowVirtualizer = useVirtualizer({
@@ -84,7 +84,7 @@ export function HomeGallery({ posts }: GalleryProps) {
       ) : status === "error" ? (
         <span>Error: {error.message}</span>
       ) : (
-        <div ref={parentRef} className="w-full h-[70vh] overflow-auto">
+        <div ref={parentRef} className="w-full h-[75vh] overflow-auto">
           <div
             style={{
               height: `${rowVirtualizer.getTotalSize()}px`,
