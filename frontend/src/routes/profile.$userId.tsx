@@ -117,6 +117,7 @@ function Profile() {
       <ProfileGallery
         {...data}
         session={session ? { user: { id: session.user.id } } : undefined}
+        userId={userId}
       />
     </div>
   );

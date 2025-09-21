@@ -23,9 +23,10 @@ interface GalleryProps {
       id: string;
     };
   };
+  userId: string;
 }
 const ROW_SIZE = 3;
-export function ProfileGallery({ posts, session }: GalleryProps) {
+export function ProfileGallery({ posts, session, userId }: GalleryProps) {
   // console.log(session);
   // console.log("userId", String(session?.user.id));
   //const { data: session2 } = useQuery(getSessionQueryOptions);
@@ -38,12 +39,10 @@ export function ProfileGallery({ posts, session }: GalleryProps) {
     fetchNextPage,
     hasNextPage,
   } = useInfiniteQuery({
-    queryKey: ["projects"],
+    queryKey: ["project"],
     queryFn: async ({ pageParam = 0 }) => {
       try {
-        const currChunk = await getPostsByUserId(
-          session ? session.user.id : ""
-        );
+        const currChunk = await getPostsByUserId(userId);
         const posts = Array.isArray(currChunk?.posts) ? currChunk.posts : [];
         const start = pageParam * ROW_SIZE;
         const end = pageParam * 3 + 3;
@@ -73,11 +72,11 @@ export function ProfileGallery({ posts, session }: GalleryProps) {
   console.log(allRows);
   console.log("hasNextPage", hasNextPage);
   const parentRef = React.useRef<HTMLDivElement>(null);
-
+  const isOwner = session?.user.id === userId;
   const rowVirtualizer = useVirtualizer({
     count: hasNextPage ? allRows.length + 1 : allRows.length,
     getScrollElement: () => parentRef.current,
-    estimateSize: () => 450,
+    estimateSize: () => (isOwner ? 450 : 420),
     overscan: 0,
   });
   const virtualItems = rowVirtualizer.getVirtualItems();
