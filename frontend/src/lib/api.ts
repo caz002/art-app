@@ -88,7 +88,7 @@ export default function getAllUserPostsOptions({
     queryKey: ["get-all-users-posts", userId],
     queryFn: async ({ pageParam = 0 }) => {
       try {
-        const currChunk = await getPostsByUserId(userId);
+        const total = await getTotalAmountUserPosts(userId);
         const start = pageParam * ROW_SIZE;
         const end = pageParam * 3 + 3;
         const subArray = await getSubArrayPostsByUserId({
@@ -96,13 +96,11 @@ export default function getAllUserPostsOptions({
           limit: ROW_SIZE,
           offset: start,
         });
-        console.log("subArray", subArray);
-        const posts = Array.isArray(currChunk?.posts) ? currChunk.posts : [];
 
         const result = {
           items: [subArray.posts],
           nextPage: pageParam + 1,
-          hasMore: end < posts.length,
+          hasMore: end < total,
         };
         return result;
       } catch (err) {
@@ -121,6 +119,7 @@ export default function getAllUserPostsOptions({
   });
 }
 
+//Gets subset of posts by user id, specified by limit and offset
 export async function getSubArrayPostsByUserId({
   userId,
   limit = 100,
@@ -140,6 +139,19 @@ export async function getSubArrayPostsByUserId({
   }
   const data = await res.json();
   return data;
+}
+
+// Returns the total number of posts in the database from a specific user
+export async function getTotalAmountUserPosts(userId: string) {
+  const res = await api.profiles[`:user_id`].$get({
+    param: { user_id: userId },
+  });
+  if (!res.ok) {
+    throw new Error("Server error");
+  }
+
+  const data = await res.json();
+  return data.posts.length;
 }
 
 export async function getPostsByUserId(userId: string) {
