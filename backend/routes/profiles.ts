@@ -79,10 +79,10 @@ export const profileRoute = new Hono()
   )
   .get("/:user_id/posts", async (c) => {
     const userId = c.req.param("user_id");
+    const { limit, offset, sortBy, order } = c.req.query();
+    console.log("limit:", limit);
     const defaultLimit = 200;
     const defaultOffset = 0;
-
-    const { limit, offset, sortBy, order } = c.req.query();
 
     const validLimit = parseIntQuery(limit, defaultLimit);
     const validOffset = parseIntQuery(offset, defaultOffset);

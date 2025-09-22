@@ -89,12 +89,18 @@ export default function getAllUserPostsOptions({
     queryFn: async ({ pageParam = 0 }) => {
       try {
         const currChunk = await getPostsByUserId(userId);
-        const posts = Array.isArray(currChunk?.posts) ? currChunk.posts : [];
         const start = pageParam * ROW_SIZE;
         const end = pageParam * 3 + 3;
+        const subArray = await getSubArrayPostsByUserId({
+          userId,
+          limit: ROW_SIZE,
+          offset: start,
+        });
+        console.log("subArray", subArray);
+        const posts = Array.isArray(currChunk?.posts) ? currChunk.posts : [];
 
         const result = {
-          items: [posts.slice(start, start + ROW_SIZE)],
+          items: [subArray.posts],
           nextPage: pageParam + 1,
           hasMore: end < posts.length,
         };
@@ -113,6 +119,27 @@ export default function getAllUserPostsOptions({
     },
     initialPageParam: 0,
   });
+}
+
+export async function getSubArrayPostsByUserId({
+  userId,
+  limit = 100,
+  offset = 0,
+}: {
+  userId: string;
+  limit?: number;
+  offset?: number;
+}) {
+  const res = await api.profiles[`:user_id`].posts.$get({
+    param: { user_id: userId },
+    query: { limit: limit.toString(), offset: offset.toString() },
+  });
+
+  if (!res.ok) {
+    throw new Error("server error");
+  }
+  const data = await res.json();
+  return data;
 }
 
 export async function getPostsByUserId(userId: string) {
