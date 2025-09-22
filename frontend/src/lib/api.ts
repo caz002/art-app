@@ -72,7 +72,7 @@ export async function getPosts({ limit = 100, offset = 0 } = {}) {
 
 export const getPostsQueryOptions = queryOptions({
   queryKey: ["get-posts"],
-  queryFn: getPosts,
+  queryFn: () => getPosts(),
   staleTime: 1000 * 60 * 5,
 });
 
