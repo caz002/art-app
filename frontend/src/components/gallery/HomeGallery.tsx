@@ -1,7 +1,7 @@
 import React from "react";
 import HomePost from "../posts/HomePost";
 import { useInfiniteQuery } from "@tanstack/react-query";
-import { getPosts } from "@/lib/api";
+import { getAllPostsQueryOptions, getPosts } from "@/lib/api";
 import { useVirtualizer } from "@tanstack/react-virtual";
 import LoadingSpinner from "../skeletons/LoadingSpinner";
 
@@ -22,31 +22,11 @@ export function HomeGallery({ posts }: GalleryProps) {
     status,
     data,
     error,
-    isFetching,
     isFetchingNextPage,
     fetchNextPage,
     hasNextPage,
-  } = useInfiniteQuery({
-    queryKey: ["projects"],
-    queryFn: async ({ pageParam }) => {
-      const currChunk = await getPosts({ limit: 3, offset: pageParam * 3 });
-      const allItems = await getPosts();
-      const end = pageParam * 3 + 3;
-      return {
-        items: [currChunk.posts],
-        nextPage: pageParam + 1,
-        hasMore: end < allItems.posts.length,
-      };
-    },
-    getNextPageParam: (lastGroup) => {
-      return lastGroup.hasMore ? lastGroup.nextPage : undefined;
-    },
-    initialPageParam: 0,
-  });
+  } = useInfiniteQuery(getAllPostsQueryOptions);
   const allRows = data ? data.pages.flatMap((d) => d.items) : [];
-  //console.log("allRows", allRows);
-  //console.log(allRows);
-  //console.log("hasNextPage", hasNextPage);
   const parentRef = React.useRef<HTMLDivElement>(null);
 
   const rowVirtualizer = useVirtualizer({

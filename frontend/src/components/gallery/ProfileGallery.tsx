@@ -3,7 +3,7 @@ import ProfilePost from "../posts/ProfilePost";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { useVirtualizer } from "@tanstack/react-virtual";
 import LoadingSpinner from "../skeletons/LoadingSpinner";
-import { getPosts, getPostsByUserId } from "@/lib/api";
+import getAllUserPostsOptions, { getPosts, getPostsByUserId } from "@/lib/api";
 import { getPostsByProfileQueryOptions } from "@/lib/api";
 import { getSessionQueryOptions } from "@/lib/api";
 import { useQuery } from "@tanstack/react-query";
@@ -27,50 +27,15 @@ interface GalleryProps {
 }
 const ROW_SIZE = 3;
 export function ProfileGallery({ posts, session, userId }: GalleryProps) {
-  // console.log(session);
-  // console.log("userId", String(session?.user.id));
-  //const { data: session2 } = useQuery(getSessionQueryOptions);
   const {
     status,
     data,
     error,
-    isFetching,
     isFetchingNextPage,
     fetchNextPage,
     hasNextPage,
-  } = useInfiniteQuery({
-    queryKey: ["project"],
-    queryFn: async ({ pageParam = 0 }) => {
-      try {
-        const currChunk = await getPostsByUserId(userId);
-        const posts = Array.isArray(currChunk?.posts) ? currChunk.posts : [];
-        const start = pageParam * ROW_SIZE;
-        const end = pageParam * 3 + 3;
-
-        const result = {
-          items: [posts.slice(start, start + ROW_SIZE)],
-          nextPage: pageParam + 1,
-          hasMore: end < posts.length,
-        };
-        return result;
-      } catch (err) {
-        console.error("QueryFn error:", err);
-        return {
-          items: [],
-          nextPage: pageParam + 1,
-          hasMore: false,
-        };
-      }
-    },
-    getNextPageParam: (lastGroup) => {
-      return lastGroup.hasMore ? lastGroup.nextPage : undefined;
-    },
-    initialPageParam: 0,
-  });
+  } = useInfiniteQuery(getAllUserPostsOptions({ userId, ROW_SIZE }));
   const allRows = data ? data.pages.flatMap((d) => d.items) : [];
-  console.log("allRows", allRows);
-  console.log(allRows);
-  console.log("hasNextPage", hasNextPage);
   const parentRef = React.useRef<HTMLDivElement>(null);
   const isOwner = session?.user.id === userId;
   const rowVirtualizer = useVirtualizer({

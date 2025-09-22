@@ -42,6 +42,8 @@ function About() {
           <div className="text-bold text-3xl font-semibold">About</div>
           DailySketch is a habit tracking site that encourages people to draw
           and share their creations, with creative daily prompt suggestions.
+          Feel free to explore the site's built-in canvas, or upload photos of
+          your drawings to share with the board.
           <div className="text-3xl font-semibold">Dev Team</div>
           <div className="flex flex-row flex-1 gap-10">
             <UserCard

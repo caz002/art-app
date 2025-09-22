@@ -1,5 +1,5 @@
 import { type ApiRoutes } from "@backend/app";
-import { queryOptions } from "@tanstack/react-query";
+import { infiniteQueryOptions, queryOptions } from "@tanstack/react-query";
 import { hc } from "hono/client";
 import { authClient } from "./auth-client";
 
@@ -24,6 +24,36 @@ export const userQueryOptions = queryOptions({
   staleTime: Infinity,
 });
 
+// Corresponds to HomeGallery component, used to retrieve post data in chunks
+export const getAllPostsQueryOptions = infiniteQueryOptions({
+  queryKey: ["get-all-posts"],
+  queryFn: async ({ pageParam }: { pageParam: number }) => {
+    const currChunk = await getPosts({ limit: 3, offset: pageParam * 3 });
+    const total = await getTotalPostLength();
+    const end = pageParam * 3 + 3;
+    return {
+      items: [currChunk.posts],
+      nextPage: pageParam + 1,
+      hasMore: end < total,
+    };
+  },
+  getNextPageParam: (lastGroup) => {
+    return lastGroup.hasMore ? lastGroup.nextPage : undefined;
+  },
+  initialPageParam: 0,
+});
+
+// Returns the total number of posts in the database
+export async function getTotalPostLength() {
+  const res = await api.posts.$get();
+  if (!res.ok) {
+    throw new Error("Server error");
+  }
+
+  const data = await res.json();
+  return data.posts.length;
+}
+
 export async function getPosts({ limit = 100, offset = 0 } = {}) {
   const res = await api.posts.$get({
     query: {
@@ -45,6 +75,45 @@ export const getPostsQueryOptions = queryOptions({
   queryFn: getPosts,
   staleTime: 1000 * 60 * 5,
 });
+
+// Corresponds to ProfileGallery Component, used to get user data loaded in chunks
+export default function getAllUserPostsOptions({
+  userId,
+  ROW_SIZE,
+}: {
+  userId: string;
+  ROW_SIZE: number;
+}) {
+  return infiniteQueryOptions({
+    queryKey: ["get-all-users-posts", userId],
+    queryFn: async ({ pageParam = 0 }) => {
+      try {
+        const currChunk = await getPostsByUserId(userId);
+        const posts = Array.isArray(currChunk?.posts) ? currChunk.posts : [];
+        const start = pageParam * ROW_SIZE;
+        const end = pageParam * 3 + 3;
+
+        const result = {
+          items: [posts.slice(start, start + ROW_SIZE)],
+          nextPage: pageParam + 1,
+          hasMore: end < posts.length,
+        };
+        return result;
+      } catch (err) {
+        console.error("QueryFn error:", err);
+        return {
+          items: [],
+          nextPage: pageParam + 1,
+          hasMore: false,
+        };
+      }
+    },
+    getNextPageParam: (lastGroup) => {
+      return lastGroup.hasMore ? lastGroup.nextPage : undefined;
+    },
+    initialPageParam: 0,
+  });
+}
 
 export async function getPostsByUserId(userId: string) {
   const res = await api.profiles[`:user_id`].$get({

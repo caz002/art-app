@@ -9,6 +9,11 @@ import { requireAuth } from "../libs/auth";
 import { zValidator } from "@hono/zod-validator";
 import { updateProfileSchema } from "../../shared/types";
 
+function parseIntQuery(value: string | undefined, defaultValue: number) {
+  const n = Number(value);
+  return Number.isNaN(n) ? defaultValue : n;
+}
+
 export const profileRoute = new Hono()
   .get("/:user_id", async (c) => {
     const userId = c.req.param("user_id");
@@ -74,6 +79,13 @@ export const profileRoute = new Hono()
   )
   .get("/:user_id/posts", async (c) => {
     const userId = c.req.param("user_id");
+    const defaultLimit = 200;
+    const defaultOffset = 0;
+
+    const { limit, offset, sortBy, order } = c.req.query();
+
+    const validLimit = parseIntQuery(limit, defaultLimit);
+    const validOffset = parseIntQuery(offset, defaultOffset);
 
     if (!userId) {
       throw new HTTPException(400, {
@@ -96,6 +108,8 @@ export const profileRoute = new Hono()
     const posts = await db
       .select()
       .from(postsTable)
+      .limit(validLimit)
+      .offset(validOffset)
       .where(eq(postsTable.userId, userId))
       .orderBy(desc(postsTable.createdAt));
 
