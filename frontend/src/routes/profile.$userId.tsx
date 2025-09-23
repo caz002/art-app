@@ -115,7 +115,6 @@ function Profile() {
         </CardContent>
       </Card>
       <ProfileGallery
-        {...data}
         session={session ? { user: { id: session.user.id } } : undefined}
         userId={userId}
       />

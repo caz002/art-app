@@ -6,7 +6,7 @@ import { requireAuth } from "../libs/auth";
 import { createPostSchema } from "../../shared/types";
 import { deleteS3ImageObject, uploadImageToS3 } from "../libs/s3";
 import { user as userTable } from "../db/schema/auth-schema";
-import { eq, asc, desc, and } from "drizzle-orm";
+import { eq, desc, and } from "drizzle-orm";
 import { processImage } from "../libs/image";
 import { HTTPException } from "hono/http-exception";
 import { savePostToDB } from "../db/posts";
@@ -21,7 +21,7 @@ export const postsRoute = new Hono()
     const defaultLimit = 200;
     const defaultOffset = 0;
 
-    const { limit, offset, sortBy, order } = c.req.query();
+    const { limit, offset } = c.req.query();
 
     const validLimit = parseIntQuery(limit, defaultLimit);
     const validOffset = parseIntQuery(offset, defaultOffset);

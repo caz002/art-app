@@ -1,12 +1,9 @@
-<img src = https://github.com/user-attachments/assets/6cd7cb89-8926-451b-9f05-cda9b55eedc7/ style="margin:-20px 0 0 -10px;"></img>
-
 # Welcome to DailySketch!
 
-An artist social networking website where users can explore, share, and document their art journey.
-
-**Note:** This project is a work in progress, which means new features are still being implemented. Follow for more developments!
+An artist social networking website where users can create profiles, upload posts, and track their art skill progression.
 
 # ✨ Technologies Used
+
 - `React.js`
 - `Tailwind CSS`
 - `Hono`
@@ -14,17 +11,22 @@ An artist social networking website where users can explore, share, and document
 - `Google Gemini API`
 
 # ✏️ Features
+
 - **Sketch Board:** Paint on an online sketch canvas and post your creations for others to review.
 - **Sketch Inspiration**: A creative prompt is released daily to inspire users to draw.
 - **Progress Tracker**: Creates a visual history of your posts, helping grow your skills and consistency over time.
-# 🚦 Running the Project
+
+# 🚦 Dev Setup
+
 ## Backend
+
 1. Add `.env` file with access keys
 2. Install dependencies: `bun install`
 3. Migrate DB: `bun drizzle-kit migrate`
 4. Run backend server: `bun dev`
 
 ## Frontend
+
 1. Enter frontend folder: `cd frontend`
 2. Install dependencies: `bun install`
 3. Run development server: `bun dev`
