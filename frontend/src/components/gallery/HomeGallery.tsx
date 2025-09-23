@@ -4,6 +4,7 @@ import { useInfiniteQuery } from "@tanstack/react-query";
 import { getAllPostsQueryOptions } from "@/lib/api";
 import { useVirtualizer } from "@tanstack/react-virtual";
 import LoadingSpinner from "../skeletons/LoadingSpinner";
+import { GallerySkeleton } from "../skeletons/GallerySkeleton";
 
 // interface GalleryProps {
 //   posts: {
@@ -60,7 +61,7 @@ export function HomeGallery() {
   return (
     <div>
       {status === "pending" ? (
-        <p>Loading...</p>
+        <GallerySkeleton />
       ) : status === "error" ? (
         <span>Error: {error.message}</span>
       ) : (

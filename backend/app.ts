@@ -11,27 +11,27 @@ const app = new Hono();
 
 app.use(logger());
 
-const apiRoutes = app
-    .basePath("/api")
-    .route("/posts", postsRoute)
-    .route("/profiles", profileRoute)
-    .route("/daily-prompt", PromptRoute)
-    .route("/auth", authRoute);
+export const apiRoutes = app
+  .basePath("/api")
+  .route("/posts", postsRoute)
+  .route("/profiles", profileRoute)
+  .route("/daily-prompt", PromptRoute)
+  .route("/auth", authRoute);
 
 app.all("/api/*", (c) => {
-    return c.redirect("/");
+  return c.redirect("/");
 });
 
 app.get("*", serveStatic({ root: "./frontend/dist" }));
 app.get("*", serveStatic({ path: "./frontend/dist/index.html" }));
 
 app.onError((err, c) => {
-    if (err instanceof HTTPException) {
-        // Get the custom response
-        return err.getResponse();
-    }
+  if (err instanceof HTTPException) {
+    // Get the custom response
+    return err.getResponse();
+  }
 
-    return c.json({ error: "Internal Server Error" }, 500);
+  return c.json({ error: "Internal Server Error" }, 500);
 });
 
 export default app;
