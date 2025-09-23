@@ -6,19 +6,19 @@ import { HomeGallery } from "@/components/gallery/HomeGallery";
 import { GallerySkeleton } from "@/components/skeletons/GallerySkeleton";
 
 export const Route = createFileRoute("/")({
-    component: Index,
+  component: Index,
 });
 
 function Index() {
-    const { isPending, error, data } = useQuery(getPostsQueryOptions);
+  const { isPending, error, data } = useQuery(getPostsQueryOptions);
 
-    if (isPending) return <GallerySkeleton />;
-    if (error) return "An error has occured: " + error.message;
+  if (isPending) return <GallerySkeleton />;
+  if (error) return "An error has occured: " + error.message;
 
-    return (
-        <div className="grid gap-4">
-            <PromptCard />
-            <HomeGallery {...data} />
-        </div>
-    );
+  return (
+    <div className="grid gap-4">
+      <PromptCard />
+      <HomeGallery />
+    </div>
+  );
 }

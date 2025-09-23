@@ -3,21 +3,9 @@ import ProfilePost from "../posts/ProfilePost";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { useVirtualizer } from "@tanstack/react-virtual";
 import LoadingSpinner from "../skeletons/LoadingSpinner";
-import getAllUserPostsOptions, { getPosts, getPostsByUserId } from "@/lib/api";
-import { getPostsByProfileQueryOptions } from "@/lib/api";
-import { getSessionQueryOptions } from "@/lib/api";
-import { useQuery } from "@tanstack/react-query";
+import getAllUserPostsOptions from "@/lib/api";
 
 interface GalleryProps {
-  posts: {
-    imageUrl: string;
-    userName?: string;
-    id: number;
-    userId: string;
-    caption: string;
-    imageKey: string;
-    createdAt: string;
-  }[];
   session?: {
     user: {
       id: string;
@@ -26,7 +14,7 @@ interface GalleryProps {
   userId: string;
 }
 const ROW_SIZE = 3;
-export function ProfileGallery({ posts, session, userId }: GalleryProps) {
+export function ProfileGallery({ session, userId }: GalleryProps) {
   const {
     status,
     data,

@@ -1,23 +1,23 @@
 import React from "react";
 import HomePost from "../posts/HomePost";
 import { useInfiniteQuery } from "@tanstack/react-query";
-import { getAllPostsQueryOptions, getPosts } from "@/lib/api";
+import { getAllPostsQueryOptions } from "@/lib/api";
 import { useVirtualizer } from "@tanstack/react-virtual";
 import LoadingSpinner from "../skeletons/LoadingSpinner";
 
-interface GalleryProps {
-  posts: {
-    imageUrl: string;
-    userName?: string;
-    id: number;
-    userId: string;
-    caption: string;
-    imageKey: string;
-    createdAt: string;
-  }[];
-}
+// interface GalleryProps {
+//   posts: {
+//     imageUrl: string;
+//     userName?: string;
+//     id: number;
+//     userId: string;
+//     caption: string;
+//     imageKey: string;
+//     createdAt: string;
+//   }[];
+// }
 
-export function HomeGallery({ posts }: GalleryProps) {
+export function HomeGallery() {
   const {
     status,
     data,
