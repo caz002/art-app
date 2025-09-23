@@ -90,7 +90,7 @@ export default function getAllUserPostsOptions({
       try {
         const total = await getTotalAmountUserPosts(userId);
         const start = pageParam * ROW_SIZE;
-        const end = pageParam * 3 + 3;
+        const end = pageParam * ROW_SIZE + ROW_SIZE;
         const subArray = await getSubArrayPostsByUserId({
           userId,
           limit: ROW_SIZE,
