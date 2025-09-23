@@ -4,6 +4,7 @@ import { useInfiniteQuery } from "@tanstack/react-query";
 import { useVirtualizer } from "@tanstack/react-virtual";
 import LoadingSpinner from "../skeletons/LoadingSpinner";
 import getAllUserPostsOptions from "@/lib/api";
+import { GallerySkeleton } from "../skeletons/GallerySkeleton";
 
 interface GalleryProps {
   session?: {
@@ -57,7 +58,7 @@ export function ProfileGallery({ session, userId }: GalleryProps) {
   return (
     <div>
       {status === "pending" ? (
-        <p>Loading...</p>
+        <GallerySkeleton />
       ) : status === "error" ? (
         <span>Error: {error.message}</span>
       ) : (
