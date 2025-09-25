@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Card, CardHeader } from "@/components/ui/card";
 
 import {
     getPostsByProfileQueryOptions,
@@ -11,6 +11,8 @@ import { ProfileSkeleton } from "@/components/skeletons/ProfileSkeleton";
 import { IoSettingsSharp } from "react-icons/io5";
 import { useState } from "react";
 import EditPopup from "@/components/profiles/editPopup";
+import { ProfileInfo } from "@/components/profiles/ProfileInfo";
+import { ProfileStats } from "@/components/profiles/ProfileStats";
 
 export const Route = createFileRoute("/profile/$userId")({
     component: Profile,
@@ -73,64 +75,10 @@ function Profile() {
                         </div>
                     </CardHeader>
                 </Card>
-                <Card>
-                    <div className="grid grid-cols-2 gap-x-5 gap-y-1  text-xs pr-4 pl-4 m-auto">
-                        <dl className="contents">
-                            <dt className="">Total Posts</dt>
-                            <dd className="text-right font-medium">
-                                {data.posts.length}
-                            </dd>
-                        </dl>
-                        <dl className="contents">
-                            <dt className="">Best Streak</dt>
-                            <dd className="text-right font-medium">
-                                {data.user.longestStreak}
-                            </dd>
-                        </dl>
-                        <dl className="contents">
-                            <dt className="">Current Streak</dt>
-                            <dd className="text-right font-medium">
-                                {data.user.currentStreak}
-                            </dd>
-                        </dl>
-                        <dl className="contents">
-                            <dt className="">Active Days</dt>
-                            <dd className="text-right font-medium">
-                                {data.user.activeDays}
-                            </dd>
-                        </dl>
-                        <dl className="contents">
-                            <dt className="">Average Posts Per Day</dt>
-                            <dd className="text-right font-medium">
-                                {data.user.activeDays == 0
-                                    ? 0
-                                    : (
-                                          data.posts.length /
-                                          data.user.activeDays
-                                      ).toFixed(2)}
-                            </dd>
-                        </dl>
-                    </div>
-                </Card>
+                <ProfileStats user={data.user} posts={data.posts} />
             </div>
-            <Card>
-                <CardContent>
-                    <div className="m-auto flex gap-x-2">
-                        <p>
-                            <b>Joined </b>
-                            {new Date(data.user.createdAt).toDateString()}
-                        </p>
-                        <p>
-                            <b>Likes </b>
-                            {data.user.likes}
-                        </p>
-                        <p>
-                            <b>Occupation </b>
-                            {data.user.occupation}
-                        </p>
-                    </div>
-                </CardContent>
-            </Card>
+
+            <ProfileInfo {...data.user} />
             <ProfileGallery
                 session={
                     session ? { user: { id: session.user.id } } : undefined
