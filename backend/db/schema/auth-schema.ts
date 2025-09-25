@@ -38,6 +38,7 @@ export const user = pgTable("user", {
         .default(new Date("0001-01-01"))
         .notNull(),
     completionRate: numeric({ precision: 5, scale: 2 }).default("0").notNull(),
+    activeDays: integer().default(0).notNull(),
 });
 
 export const session = pgTable("session", {
