@@ -4,6 +4,7 @@ import {
     timestamp,
     boolean,
     integer,
+    numeric,
 } from "drizzle-orm/pg-core";
 
 export const user = pgTable("user", {
@@ -36,6 +37,7 @@ export const user = pgTable("user", {
     lastActive: timestamp("last_active")
         .default(new Date("0001-01-01"))
         .notNull(),
+    completionRate: numeric({ precision: 5, scale: 2 }).default("0").notNull(),
 });
 
 export const session = pgTable("session", {
