@@ -1,11 +1,10 @@
 {
-  "buildCommand": "bun install && bun dev",
-  "outputDirectory": "dist",
-  "ignoreCommand": "exit 1",
+  "buildCommand": "cd frontend && bun install && bun run build",
+  "outputDirectory": "frontend/dist",
   "routes": [
     {
       "src": "/(.*)",
-      "dest": "/backend/index.ts"
+      "dest": "/index.html"
     }
   ]
 }
