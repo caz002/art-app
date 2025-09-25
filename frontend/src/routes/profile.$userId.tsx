@@ -94,15 +94,20 @@ function Profile() {
                             </dd>
                         </dl>
                         <dl className="contents">
-                            <dt className="">Perfect Week Count</dt>
+                            <dt className="">Active Days</dt>
                             <dd className="text-right font-medium">
-                                NotImplemented
+                                {data.user.activeDays}
                             </dd>
                         </dl>
                         <dl className="contents">
-                            <dt className="">Completion Rate</dt>
+                            <dt className="">Average Posts Per Day</dt>
                             <dd className="text-right font-medium">
-                                NotImplemented
+                                {data.user.activeDays == 0
+                                    ? 0
+                                    : (
+                                          data.posts.length /
+                                          data.user.activeDays
+                                      ).toFixed(2)}
                             </dd>
                         </dl>
                     </div>

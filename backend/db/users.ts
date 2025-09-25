@@ -7,6 +7,11 @@ export async function updateStats(userId: string, createdAt: Date) {
     const today = startOfDay(createdAt);
     const yesterday = subDays(today, 1);
 
+    // completion rate since user creation
+    // ? number of days / 365 they completed
+    // upload a post
+    // what do we want to change?
+    // grab number of unique days within 365 days
     await db.transaction(async (tx) => {
         const [user] = await tx
             .select()
@@ -37,6 +42,7 @@ export async function updateStats(userId: string, createdAt: Date) {
                 lastActive: today,
                 currentStreak: streak,
                 longestStreak: longest,
+                activeDays: user.activeDays + 1,
             })
             .where(eq(userTable.id, userId));
     });
