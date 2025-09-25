@@ -1,5 +1,5 @@
 {
-  "buildCommand": "cd frontend && bun install && bun run build",
+  "buildCommand": "cd frontend && bun install && bun dev",
   "outputDirectory": "frontend/dist",
   "routes": [
     {
