@@ -34,7 +34,7 @@ export default defineConfig({
     alias: {
       "@": path.resolve(__dirname, "./src"),
       "@backend": path.resolve(__dirname, "../backend"),
-      "@shared": path.resolve(__dirname, "../shared"),
+      "@shared": path.resolve(__dirname, "../shared/"),
     },
   },
   server: {
