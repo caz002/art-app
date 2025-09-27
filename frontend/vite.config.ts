@@ -46,4 +46,9 @@ export default defineConfig({
       },
     },
   },
+  build: {
+    rollupOptions: {
+      external: ["drizzle-orm/pg-core"],
+    },
+  },
 });
