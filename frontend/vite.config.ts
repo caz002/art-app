@@ -17,6 +17,7 @@ if (!fs.existsSync(tanstackTmpDir)) {
 
 console.log("Routes Directory:", routesDir);
 console.log("Temp Directory:", tanstackTmpDir);
+console.log(__dirname);
 export default defineConfig({
   // root: path.resolve(__dirname),
   plugins: [
@@ -34,7 +35,7 @@ export default defineConfig({
     alias: {
       "@": path.resolve(__dirname, "./src"),
       "@backend": path.resolve(__dirname, "../backend"),
-      "@shared": path.resolve(__dirname, "../shared/"),
+      "@shared": path.resolve(__dirname, "../shared"),
     },
   },
   server: {
