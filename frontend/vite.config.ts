@@ -10,16 +10,16 @@ export default defineConfig({
     tanstackRouter({
       target: "react",
       autoCodeSplitting: true,
-      routesDirectory: path.resolve(__dirname, "./src/routes"), // 👈 This is the fix
+      routesDirectory: path.resolve(__dirname, "./frontend/src/routes"), // 👈 This is the fix
     }),
     react(),
     tailwindcss(),
   ],
   resolve: {
     alias: {
-      "@": path.resolve(__dirname, "./src"),
-      "@backend": path.resolve(__dirname, "../backend"),
-      "@shared": path.resolve(__dirname, "../shared"),
+      "@": path.resolve(__dirname, "./frontend/src"),
+      "@backend": path.resolve(__dirname, "./backend"),
+      "@shared": path.resolve(__dirname, "./shared"),
     },
   },
   server: {
