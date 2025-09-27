@@ -10,114 +10,118 @@ import { eq, desc, and } from "drizzle-orm";
 import { processImage } from "../libs/image";
 import { HTTPException } from "hono/http-exception";
 import { savePostToDB } from "../db/posts";
+import { updateStats } from "../db/users";
 
 function parseIntQuery(value: string | undefined, defaultValue: number) {
-  const n = Number(value);
-  return Number.isNaN(n) ? defaultValue : n;
+    const n = Number(value);
+    return Number.isNaN(n) ? defaultValue : n;
 }
 
 export const postsRoute = new Hono()
-  .get("/", async (c) => {
-    const defaultLimit = 200;
-    const defaultOffset = 0;
+    .get("/", async (c) => {
+        const defaultLimit = 200;
+        const defaultOffset = 0;
 
-    const { limit, offset } = c.req.query();
+        const { limit, offset } = c.req.query();
 
-    const validLimit = parseIntQuery(limit, defaultLimit);
-    const validOffset = parseIntQuery(offset, defaultOffset);
+        const validLimit = parseIntQuery(limit, defaultLimit);
+        const validOffset = parseIntQuery(offset, defaultOffset);
 
-    const posts = await db
-      .select()
-      .from(postsTable)
-      .limit(validLimit)
-      .offset(validOffset)
-      .leftJoin(userTable, eq(postsTable.userId, userTable.id))
-      .orderBy(desc(postsTable.createdAt));
+        const posts = await db
+            .select()
+            .from(postsTable)
+            .limit(validLimit)
+            .offset(validOffset)
+            .leftJoin(userTable, eq(postsTable.userId, userTable.id))
+            .orderBy(desc(postsTable.createdAt));
 
-    const postsWithUrls = posts.map((post) => ({
-      ...post.posts,
-      imageUrl: process.env.CLOUDFRONT_URL! + post.posts.imageKey,
-      userName: post.user!.name,
-    }));
+        const postsWithUrls = posts.map((post) => ({
+            ...post.posts,
+            imageUrl: process.env.CLOUDFRONT_URL! + post.posts.imageKey,
+            userName: post.user!.name,
+        }));
 
-    return c.json({ posts: postsWithUrls });
-  })
-  .post("/", requireAuth, zValidator("form", createPostSchema), async (c) => {
-    try {
-      const post = c.req.valid("form");
-      const userId = c.var.user.id;
-      const userName = c.var.user.name;
+        return c.json({ posts: postsWithUrls });
+    })
+    .post("/", requireAuth, zValidator("form", createPostSchema), async (c) => {
+        try {
+            const post = c.req.valid("form");
+            const userId = c.var.user.id;
+            const userName = c.var.user.name;
 
-      const validatedPost = insertPostSchema.parse({
-        ...post,
-        userId,
-      });
+            const validatedPost = insertPostSchema.parse({
+                ...post,
+                userId,
+            });
 
-      const buffer = await processImage(post.picture);
-      const imageKey = await uploadImageToS3(buffer, post.picture.type);
-      const insertedPost = await savePostToDB(
-        userId,
-        validatedPost.caption,
-        imageKey
-      );
+            const buffer = await processImage(post.picture);
+            const imageKey = await uploadImageToS3(buffer, post.picture.type);
+            const insertedPost = await savePostToDB(
+                userId,
+                validatedPost.caption,
+                imageKey
+            );
 
-      const postWithUrl = {
-        ...insertedPost,
-        userName: userName,
-        imageUrl: process.env.CLOUDFRONT_URL! + imageKey,
-      };
+            // update stats
+            await updateStats(userId, insertedPost.createdAt);
 
-      c.status(201);
-      return c.json(postWithUrl);
-    } catch (err) {
-      console.error("Unexpected error:", err);
-      throw new HTTPException(500, { message: "Internal Server Error" });
-    }
-  })
-  .get("/:id{[0-9]+}", async (c) => {
-    const id = Number(c.req.param("id"));
-    const post = await db
-      .select()
-      .from(postsTable)
-      .where(eq(postsTable.id, id))
-      .limit(1)
-      .then((rows) => rows[0]);
-    if (!post) throw new HTTPException(404, { message: "Post not found" });
+            const postWithUrl = {
+                ...insertedPost,
+                userName: userName,
+                imageUrl: process.env.CLOUDFRONT_URL! + imageKey,
+            };
 
-    return c.json(post);
-  })
-  .delete("/:id{[0-9]+}", requireAuth, async (c) => {
-    const id = Number(c.req.param("id"));
+            c.status(201);
+            return c.json(postWithUrl);
+        } catch (err) {
+            console.error("Unexpected error:", err);
+            throw new HTTPException(500, { message: "Internal Server Error" });
+        }
+    })
+    .get("/:id{[0-9]+}", async (c) => {
+        const id = Number(c.req.param("id"));
+        const post = await db
+            .select()
+            .from(postsTable)
+            .where(eq(postsTable.id, id))
+            .limit(1)
+            .then((rows) => rows[0]);
+        if (!post) throw new HTTPException(404, { message: "Post not found" });
 
-    const userId = c.var.user.id;
-    const post = await db
-      .select()
-      .from(postsTable)
-      .where(eq(postsTable.id, id))
-      .limit(1)
-      .then((rows) => rows[0]);
+        return c.json(post);
+    })
+    .delete("/:id{[0-9]+}", requireAuth, async (c) => {
+        const id = Number(c.req.param("id"));
 
-    if (!post) throw new HTTPException(404, { message: "Post not found" });
-    if (post.userId !== userId)
-      throw new HTTPException(403, { message: "Forbidden" });
+        const userId = c.var.user.id;
+        const post = await db
+            .select()
+            .from(postsTable)
+            .where(eq(postsTable.id, id))
+            .limit(1)
+            .then((rows) => rows[0]);
 
-    const deletedPost = await db
-      .delete(postsTable)
-      .where(and(eq(postsTable.id, id), eq(postsTable.userId, userId)))
-      .returning()
-      .then((res) => res[0]);
+        if (!post) throw new HTTPException(404, { message: "Post not found" });
+        if (post.userId !== userId)
+            throw new HTTPException(403, { message: "Forbidden" });
 
-    // this should be guaranteed though.
-    if (!deletedPost) {
-      throw new HTTPException(404, { message: "Post not found" });
-    }
+        const deletedPost = await db
+            .delete(postsTable)
+            .where(and(eq(postsTable.id, id), eq(postsTable.userId, userId)))
+            .returning()
+            .then((res) => res[0]);
 
-    try {
-      await deleteS3ImageObject(deletedPost.imageKey);
-    } catch (err) {
-      // might need to roll back
-      console.error("Failed to delete S3 image:", err);
-    }
+        // this should be guaranteed though.
+        if (!deletedPost) {
+            throw new HTTPException(404, { message: "Post not found" });
+        }
 
-    return c.json({});
-  });
+        try {
+            await deleteS3ImageObject(deletedPost.imageKey);
+        } catch (err) {
+            // might need to roll back
+            console.error("Failed to delete S3 image:", err);
+        }
+
+        return c.json({});
+    });

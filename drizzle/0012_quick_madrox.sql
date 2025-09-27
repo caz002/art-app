@@ -1,0 +1,1 @@
+ALTER TABLE "user" ADD COLUMN "completionRate" numeric(5, 2) DEFAULT '0' NOT NULL;
