@@ -3,18 +3,19 @@ import react from "@vitejs/plugin-react";
 import path from "path";
 import tailwindcss from "@tailwindcss/vite";
 import { tanstackRouter } from "@tanstack/router-plugin/vite";
-// const routesDir = path.resolve(__dirname, './src/routes');
-// if (!fs.existsSync(routesDir)) {
-//   fs.mkdirSync(routesDir, { recursive: true });
-// }
-// console.log('Routes Directory:', routesDir);
+import fs from "fs"; // Import the fs module
+const routesDir = path.resolve(__dirname, "./src/routes");
+if (!fs.existsSync(routesDir)) {
+  fs.mkdirSync(routesDir, { recursive: true });
+}
+console.log("Routes Directory:", routesDir);
 export default defineConfig({
   // root: path.resolve(__dirname),
   plugins: [
     tanstackRouter({
       target: "react",
       autoCodeSplitting: true,
-      // routesDirectory: path.resolve(__dirname, "./src/routes"), // 👈 This is the fix
+      routesDirectory: routesDir,
     }),
     react(),
     tailwindcss(),
