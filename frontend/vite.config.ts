@@ -25,7 +25,7 @@ export default defineConfig({
       autoCodeSplitting: true,
       routesDirectory: routesDir,
       tmpDir: tanstackTmpDir, // Specify the temporary directory explicitly
-      generatedRouteTree: "./frontend/src/routeTree.gen.ts",
+      generatedRouteTree: "./src/routeTree.gen.ts",
     }),
     react(),
     tailwindcss(),
