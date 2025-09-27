@@ -10,7 +10,7 @@ export default defineConfig({
     tanstackRouter({
       target: "react",
       autoCodeSplitting: true,
-      routesDirectory: path.resolve(__dirname, "./frontend/src/routes"), // 👈 This is the fix
+      routesDirectory: path.resolve(__dirname, "./src/routes"), // 👈 This is the fix
     }),
     react(),
     tailwindcss(),
