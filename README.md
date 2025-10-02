@@ -9,6 +9,7 @@ An artist social networking website where users can create profiles, upload post
 - `Hono`
 - `AWS`
 - `Google Gemini API`
+- `Vercel`
 
 # ✏️ Features
 

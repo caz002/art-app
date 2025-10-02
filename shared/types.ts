@@ -1,6 +1,5 @@
-import { createUpdateSchema } from "drizzle-zod";
 import { insertPostSchema } from "../backend/db/schema/posts";
-import { user } from "../backend/db/schema/auth-schema";
+import { insertUserSchema } from "../backend/db/schema/auth-schema";
 
 export const createPostSchema = insertPostSchema.omit({
   id: true,
@@ -8,7 +7,7 @@ export const createPostSchema = insertPostSchema.omit({
   createdAt: true,
 });
 
-export const updateProfileSchema = createUpdateSchema(user).omit({
+export const updateProfileSchema = insertUserSchema.omit({
   id: true,
   name: true,
   email: true,
